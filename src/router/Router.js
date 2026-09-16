@@ -18,8 +18,14 @@ export class Router {
     this.render();
   }
 
+  getPath() {
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+    const path = location.pathname.replace(base, '');
+    return path || '/';
+  }
+
   render() {
-    const Page = this.routes[location.pathname] || this.routes['*'];
+    const Page = this.routes[this.getPath()] || this.routes['*'];
     new Page().mount(this.container);
   }
 }

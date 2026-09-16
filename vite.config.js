@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   root: 'src',
   publicDir: '../public',
   resolve: {
@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   appType: 'spa',
+  base: command === 'build' ? '/rsschool-landing-page/' : '/',
   build: {
     sourcemap: true,
     minify: false,
@@ -18,4 +19,4 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 3000,
   },
-});
+}));
