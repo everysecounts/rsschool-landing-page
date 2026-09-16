@@ -1,3 +1,5 @@
-import './style.css'
+import { App } from '@/App.js';
 
-document.querySelector('#app').textContent = 'Hello, Vite!';
+const app = new App(document.querySelector('#app'));
+
+app.start();
