@@ -1,8 +1,8 @@
 import { createElement } from '@/utils/createElement.js';
 
-export class Catalog {
+export class Menu {
   constructor() {
-    const title = createElement('h1', {}, 'Catalog');
+    const title = createElement('h1', {}, 'Menu');
     this.element = createElement('main', {}, title);
   }
   mount(container) {
