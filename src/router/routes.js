@@ -1,6 +1,6 @@
-import { Home } from '@/pages/Home/Home.js';
-import { Menu } from '@/pages/Menu/Menu.js';
-import { NotFound } from '@/pages/NotFound/NotFound.js';
+import { Home } from '@/pages/Home';
+import { Menu } from '@/pages/Menu';
+import { NotFound } from '@/pages/NotFound';
 
 export const routes = {
   '/': Home,

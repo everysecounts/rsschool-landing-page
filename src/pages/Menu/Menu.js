@@ -1,4 +1,4 @@
-import { createElement } from '@/utils/createElement.js';
+import { createElement } from '@/utils';
 
 export class Menu {
   constructor() {

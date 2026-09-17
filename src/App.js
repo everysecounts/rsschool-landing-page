@@ -1,5 +1,4 @@
-import { Router } from '@/router/Router.js';
-import { routes } from '@/router/routes.js';
+import { Router, routes } from '@/router';
 
 export class App {
   constructor(container) {
