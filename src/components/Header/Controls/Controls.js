@@ -1,31 +1,42 @@
 import { createElement } from '@/utils';
-import styles from './controls.module.css';
+import { ThemeSwitcher } from './ThemeSwitcher';
+import { menuIcon } from './menuIcon';
+import styles from './Controls.module.css';
+
+function menuHref() {
+  const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+  return `${base}menu`;
+}
 
 export class Controls {
   constructor() {
-    const base = import.meta.env.BASE_URL;
-    const theme = createElement('button', {
-      className: styles.theme,
-      type: 'button',
-      'aria-label': 'Toggle theme',
-    });
+    const themeSwitcher = new ThemeSwitcher();
 
-    const menu = createElement(
+    this.menuLink = createElement(
       'a',
       {
         className: styles.menu,
-        href: `${base.replace(/\/?$/, '/')}menu`,
+        href: menuHref(),
       },
       'Menu',
+      menuIcon(styles.menuIcon),
     );
 
     this.element = createElement(
       'div',
-      {
-        className: styles.controls,
-      },
-      theme,
-      menu,
+      { className: styles.controls },
+      themeSwitcher.element,
+      this.menuLink,
     );
+  }
+
+  setActivePath(path) {
+    const isMenuPage = path === '/menu';
+    this.menuLink.classList.toggle(styles.menuActive, isMenuPage);
+    if (isMenuPage) {
+      this.menuLink.setAttribute('aria-current', 'page');
+    } else {
+      this.menuLink.removeAttribute('aria-current');
+    }
   }
 }

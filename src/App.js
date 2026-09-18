@@ -7,7 +7,9 @@ export class App {
     this.container = container;
     this.header = new Header();
     this.main = new Main();
-    this.router = new Router(routes, this.main.element);
+    this.router = new Router(routes, this.main.element, (path) => {
+      this.header.setActivePath(path);
+    });
   }
   start() {
     this.container.replaceChildren(this.header.element, this.main.element);

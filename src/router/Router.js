@@ -1,7 +1,10 @@
+import { clearSections, getSection } from '@/utils';
+
 export class Router {
-  constructor(routes, container) {
+  constructor(routes, container, onNavigate) {
     this.routes = routes;
     this.container = container;
+    this.onNavigate = onNavigate;
   }
 
   start() {
@@ -27,8 +30,7 @@ export class Router {
       return;
     }
     event.preventDefault();
-    const nextUrl = `${link.pathname}${link.search}${link.hash}`;
-    history.pushState(null, '', nextUrl);
+    history.pushState(null, '', `${link.pathname}${link.search}${link.hash}`);
     this.render();
   }
 
@@ -41,8 +43,11 @@ export class Router {
   }
 
   render() {
-    const Page = this.routes[this.getPath()] || this.routes['*'];
+    clearSections();
+    const path = this.getPath();
+    const Page = this.routes[path] || this.routes['*'];
     new Page().mount(this.container);
+    this.onNavigate?.(path);
     this.scrollToHash();
   }
 
@@ -53,7 +58,7 @@ export class Router {
     }
 
     requestAnimationFrame(() => {
-      const target = document.getElementById(hash);
+      const target = getSection(hash);
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }

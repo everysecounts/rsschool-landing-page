@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ mode }) => ({
   root: 'src',
   publicDir: '../public',
   resolve: {
@@ -10,8 +10,9 @@ export default defineConfig(({ command }) => ({
     },
   },
   appType: 'spa',
-  base: command === 'build' ? '/rsschool-landing-page/' : '/',
+  base: mode === 'production' ? '/rsschool-landing-page/' : '/',
   build: {
+    outDir: '../dist',
     sourcemap: true,
     minify: false,
   },

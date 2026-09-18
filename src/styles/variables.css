@@ -1,5 +1,34 @@
 :root {
   --font-family: inter, sans-serif;
   --text-primary: #403f3d;
+  --text-inverse: #e1d4c9;
+  --text-accent: #b0907a;
   --background-page: #e1d4c9;
+  --background-container: #665f55;
+  --background-overlay: rgb(64 63 61 / 80%);
+  --border-primary: #c1b6ad;
+  --border-inverse: #665f55;
+  --background-modal: #e1d4c9;
+  --background-modalcontrol: #665f55;
+  --switch-active-bg: #b0907a;
+  --switch-hover-bg: #665f55;
+  --switch-icon-on: #e1d4c9;
+  --switch-icon-off: #403f3d;
+}
+
+[data-theme='dark'] {
+  --text-primary: #e1d4c9;
+  --text-inverse: #e1d4c9;
+  --text-accent: #b0907a;
+  --background-page: #292826;
+  --background-container: #403f3d;
+  --background-overlay: rgb(41 40 38 / 80%);
+  --border-primary: #665f55;
+  --border-inverse: #c1b6ad;
+  --background-modal: #403f3d;
+  --background-modalcontrol: #292826;
+  --switch-active-bg: #b0907a;
+  --switch-hover-bg: #403f3d;
+  --switch-icon-on: #e1d4c9;
+  --switch-icon-off: #e1d4c9;
 }
