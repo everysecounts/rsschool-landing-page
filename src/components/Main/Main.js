@@ -1,8 +1,9 @@
+import { createElement } from '@/utils';
 import styles from './Main.module.css';
 
 class Main {
   constructor() {
-    this.element = document.createElement('main', {
+    this.element = createElement('main', {
       className: styles.main,
     });
   }
