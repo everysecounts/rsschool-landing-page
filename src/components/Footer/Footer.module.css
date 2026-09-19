@@ -30,6 +30,7 @@
 
       .titleAccent {
         color: var(--text-accent);
+        font-style: italic;
       }
 
       .socialLinks {
