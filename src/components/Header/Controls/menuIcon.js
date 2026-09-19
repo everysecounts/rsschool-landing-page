@@ -1,6 +1,6 @@
 import { createSvg } from '@/utils';
 
-export function menuIcon(className) {
+function menuIcon(className) {
   return createSvg(
     'svg',
     {
@@ -42,3 +42,5 @@ export function menuIcon(className) {
     }),
   );
 }
+
+export { menuIcon };

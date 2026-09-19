@@ -34,7 +34,7 @@ function navHref({ hash, homeOnly }) {
   return `${base}/#${hash}`;
 }
 
-export class Navigation {
+class Navigation {
   constructor() {
     const navItems = NAV_ITEMS.map((item) => {
       const link = createElement(
@@ -72,3 +72,5 @@ export class Navigation {
     );
   }
 }
+
+export { Navigation };

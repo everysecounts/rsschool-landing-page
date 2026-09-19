@@ -25,7 +25,7 @@ function createLogoGraphic() {
   );
 }
 
-export class Logo {
+class Logo {
   constructor() {
     const graphic = createElement(
       'span',
@@ -46,3 +46,5 @@ export class Logo {
     );
   }
 }
+
+export { Logo };

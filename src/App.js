@@ -3,7 +3,7 @@ import { Main } from '@/components/Main';
 import { Footer } from '@/components/Footer';
 import { Router, routes } from '@/router';
 
-export class App {
+class App {
   constructor(container) {
     this.container = container;
     this.header = new Header();
@@ -18,3 +18,5 @@ export class App {
     this.router.start();
   }
 }
+
+export { App };

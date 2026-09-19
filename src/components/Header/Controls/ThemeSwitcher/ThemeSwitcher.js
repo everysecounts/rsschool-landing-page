@@ -21,7 +21,7 @@ function icon(path, viewBox, size) {
   );
 }
 
-export class ThemeSwitcher {
+class ThemeSwitcher {
   constructor() {
     this.sunButton = createElement(
       'button',
@@ -90,3 +90,5 @@ export class ThemeSwitcher {
     this.moonButton.setAttribute('aria-pressed', String(!isLightTheme));
   }
 }
+
+export { ThemeSwitcher };

@@ -1,6 +1,6 @@
 import { createElement } from '@/utils';
 
-export class Menu {
+class Menu {
   constructor() {
     const title = createElement('h1', {}, 'Menu');
     this.element = title;
@@ -9,3 +9,5 @@ export class Menu {
     container.replaceChildren(this.element);
   }
 }
+
+export { Menu };

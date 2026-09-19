@@ -1,6 +1,6 @@
 import { createElement } from '@/utils';
 
-export class Home {
+class Home {
   constructor() {
     const title = createElement('h1', {}, 'Home');
     this.element = title;
@@ -10,3 +10,5 @@ export class Home {
     container.replaceChildren(this.element);
   }
 }
+
+export { Home };

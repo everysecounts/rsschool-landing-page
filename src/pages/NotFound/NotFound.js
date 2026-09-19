@@ -1,6 +1,6 @@
 import { createElement } from '@/utils';
 
-export class NotFound {
+class NotFound {
   constructor() {
     this.text = createElement('p', {}, 'Page not found');
     this.link = createElement(
@@ -17,3 +17,5 @@ export class NotFound {
     container.replaceChildren(this.text, this.link);
   }
 }
+
+export { NotFound };

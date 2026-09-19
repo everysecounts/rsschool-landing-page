@@ -70,7 +70,7 @@ function createContactItem({ label, href, target, rel, icon }) {
   );
 }
 
-export class Footer {
+class Footer {
   constructor() {
     const socialLinks = createElement(
       'div',
@@ -111,3 +111,5 @@ export class Footer {
     this.element = createElement('footer', { className: styles.footer }, content);
   }
 }
+
+export { Footer };

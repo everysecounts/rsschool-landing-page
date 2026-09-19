@@ -1,4 +1,4 @@
-export function createElement(tag, attributes = {}, ...children) {
+function createElement(tag, attributes = {}, ...children) {
   const element = document.createElement(tag);
   Object.entries(attributes).forEach(([name, value]) => {
     if (name === 'className') {
@@ -10,3 +10,5 @@ export function createElement(tag, attributes = {}, ...children) {
   element.append(...children);
   return element;
 }
+
+export { createElement };

@@ -1,6 +1,6 @@
 import { clearSections, getSection } from '@/utils';
 
-export class Router {
+class Router {
   constructor(routes, container, onNavigate) {
     this.routes = routes;
     this.container = container;
@@ -65,3 +65,5 @@ export class Router {
     });
   }
 }
+
+export { Router };

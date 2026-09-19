@@ -4,7 +4,7 @@ import { Logo } from './Logo';
 import { Navigation } from './Navigation';
 import styles from './Header.module.css';
 
-export class Header {
+class Header {
   constructor() {
     this.logo = new Logo();
     this.navigation = new Navigation();
@@ -22,3 +22,5 @@ export class Header {
     this.controls.setActivePath(path);
   }
 }
+
+export { Header };

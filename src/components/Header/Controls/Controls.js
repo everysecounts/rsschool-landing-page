@@ -8,7 +8,7 @@ function menuHref() {
   return `${base}menu`;
 }
 
-export class Controls {
+class Controls {
   constructor() {
     const themeSwitcher = new ThemeSwitcher();
 
@@ -40,3 +40,5 @@ export class Controls {
     }
   }
 }
+
+export { Controls };
