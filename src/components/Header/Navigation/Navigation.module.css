@@ -9,6 +9,7 @@
 
     .navItem {
       list-style-type: none;
+      height: 28px;
 
       .navLink {
         text-decoration: none;
@@ -17,6 +18,7 @@
         font-size: 16px;
         line-height: 150%;
         position: relative;
+        letter-spacing: 0.01em;
 
         &::after {
           content: '';
