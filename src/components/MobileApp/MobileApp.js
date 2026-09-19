@@ -69,7 +69,7 @@ class MobileApp {
 
     const image = createElement('img', {
       className: styles.image,
-      src: '/assets/mobile-screens.avif',
+      src: `${import.meta.env.BASE_URL}assets/mobile-screens.avif`,
       alt: 'Mobile screens',
     });
 

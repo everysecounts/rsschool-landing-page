@@ -3,22 +3,22 @@ import styles from './About.module.css';
 
 const IMAGES = [
   {
-    src: '/assets/about-1.avif',
+    src: `${import.meta.env.BASE_URL}assets/about-1.avif`,
     alt: 'Woman enjoying coffee',
     className: styles.imageLarge,
   },
   {
-    src: '/assets/about-2.avif',
+    src: `${import.meta.env.BASE_URL}assets/about-2.avif`,
     alt: 'Cup of coffee',
     className: styles.imageSmall,
   },
   {
-    src: '/assets/about-3.avif',
+    src: `${import.meta.env.BASE_URL}assets/about-3.avif`,
     alt: 'Man enjoying coffee',
     className: styles.imageSmall,
   },
   {
-    src: '/assets/about-4.avif',
+    src: `${import.meta.env.BASE_URL}assets/about-4.avif`,
     alt: 'Couple enjoying coffee',
     className: styles.imageLarge,
   },
