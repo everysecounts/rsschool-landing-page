@@ -1,13 +1,13 @@
 .footer {
   max-width: 1360px;
   padding: 100px;
-  margin: 0 auto;
+  margin: 100px auto 40px;
   color: var(--text-inverse);
   background-color: var(--background-container);
   border-radius: 40px;
 
   @media screen and (width < 1440px) {
-    margin: 0 20px;
+    margin: 100px 20px 40px;
   }
 
   .content {

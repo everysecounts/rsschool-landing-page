@@ -29,17 +29,23 @@ class Router {
     if (samePath && link.hash) {
       return;
     }
+    const path = this.getPathname(link.pathname);
+    if (!this.routes[path]) {
+      return;
+    }
     event.preventDefault();
     history.pushState(null, '', `${link.pathname}${link.search}${link.hash}`);
     this.render();
   }
 
-  getPath() {
+  getPathname(pathname) {
     const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-    const path = location.pathname.startsWith(base)
-      ? location.pathname.slice(base.length)
-      : location.pathname;
+    const path = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
     return path || '/';
+  }
+
+  getPath() {
+    return this.getPathname(location.pathname);
   }
 
   render() {

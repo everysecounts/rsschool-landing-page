@@ -1,13 +1,12 @@
-import { createElement } from '@/utils';
+import { MobileApp } from '@/components/MobileApp';
 
 class Home {
   constructor() {
-    const title = createElement('h1', {}, 'Home');
-    this.element = title;
+    this.sections = [new MobileApp()];
   }
 
   mount(container) {
-    container.replaceChildren(this.element);
+    container.replaceChildren(...this.sections.map((section) => section.element));
   }
 }
 

@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   {
     label: 'Mobile app',
     hash: 'mobile-app',
+    homeOnly: true,
   },
   {
     label: 'Contact us',
