@@ -1,32 +1,37 @@
 import { createElement } from '@/utils';
+import { createMenuLink } from '../MenuLink';
 import { ThemeSwitcher } from './ThemeSwitcher';
-import { menuIcon } from './menuIcon';
 import styles from './Controls.module.css';
 
-function menuHref() {
-  const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-  return `${base}menu`;
-}
-
 class Controls {
-  constructor() {
+  constructor(onBurgerClick) {
     const themeSwitcher = new ThemeSwitcher();
+    this.menuLink = createMenuLink(styles.menu, styles.menuIcon);
+    this.menuLink.addEventListener('click', (event) => {
+      if (this.menuLink.classList.contains(styles.menuActive)) {
+        event.preventDefault();
+      }
+    });
 
-    this.menuLink = createElement(
-      'a',
+    this.burger = createElement(
+      'button',
       {
-        className: styles.menu,
-        href: menuHref(),
+        className: styles.burger,
+        type: 'button',
+        'aria-label': 'Open menu',
+        'aria-expanded': 'false',
       },
-      'Menu',
-      menuIcon(styles.menuIcon),
+      createElement('span'),
+      createElement('span'),
     );
+    this.burger.addEventListener('click', onBurgerClick);
 
     this.element = createElement(
       'div',
       { className: styles.controls },
       themeSwitcher.element,
       this.menuLink,
+      this.burger,
     );
   }
 
@@ -38,6 +43,12 @@ class Controls {
     } else {
       this.menuLink.removeAttribute('aria-current');
     }
+  }
+
+  setBurgerState(isOpen) {
+    this.burger.classList.toggle(styles.burgerOpen, isOpen);
+    this.burger.setAttribute('aria-expanded', String(isOpen));
+    this.burger.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
   }
 }
 

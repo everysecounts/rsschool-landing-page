@@ -5,10 +5,6 @@ function registerSection(id, element) {
   sections.set(id, element);
 }
 
-function unregisterSection(id) {
-  sections.delete(id);
-}
-
 function getSection(id) {
   return sections.get(id) ?? null;
 }
@@ -17,4 +13,4 @@ function clearSections() {
   sections.clear();
 }
 
-export { registerSection, unregisterSection, getSection, clearSections };
+export { registerSection, getSection, clearSections };

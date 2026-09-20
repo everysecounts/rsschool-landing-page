@@ -1,23 +1,25 @@
+import { getAssetUrl } from '@/utils';
+
 const FAVORITE_PRODUCTS = [
   {
     name: 'S’mores Frappuccino',
     description:
       'This new drink takes an espresso and mixes it with brown sugar and cinnamon before being topped with oat milk.',
     price: '$5.50',
-    image: `${import.meta.env.BASE_URL}assets/coffee-slider-1.avif`,
+    image: getAssetUrl('assets/coffee-slider-1.avif'),
   },
   {
     name: 'Caramel Macchiato',
     description:
       'Fragrant espresso with steamed milk and caramel sauce topped with a creamy milk foam.',
     price: '$5.50',
-    image: `${import.meta.env.BASE_URL}assets/coffee-slider-2.avif`,
+    image: getAssetUrl('assets/coffee-slider-2.avif'),
   },
   {
     name: 'Ice coffee',
     description: 'A refreshing iced coffee drink with milk and a smooth coffee flavor.',
     price: '$5.50',
-    image: `${import.meta.env.BASE_URL}assets/coffee-slider-3.avif`,
+    image: getAssetUrl('assets/coffee-slider-3.avif'),
   },
 ];
 

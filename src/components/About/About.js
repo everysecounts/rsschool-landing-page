@@ -1,24 +1,24 @@
-import { createElement, registerSection } from '@/utils';
+import { createElement, getAssetUrl, registerSection } from '@/utils';
 import styles from './About.module.css';
 
 const IMAGES = [
   {
-    src: `${import.meta.env.BASE_URL}assets/about-1.avif`,
+    src: getAssetUrl('assets/about-1.avif'),
     alt: 'Woman enjoying coffee',
     className: styles.imageLarge,
   },
   {
-    src: `${import.meta.env.BASE_URL}assets/about-2.avif`,
+    src: getAssetUrl('assets/about-2.avif'),
     alt: 'Cup of coffee',
     className: styles.imageSmall,
   },
   {
-    src: `${import.meta.env.BASE_URL}assets/about-3.avif`,
+    src: getAssetUrl('assets/about-3.avif'),
     alt: 'Man enjoying coffee',
     className: styles.imageSmall,
   },
   {
-    src: `${import.meta.env.BASE_URL}assets/about-4.avif`,
+    src: getAssetUrl('assets/about-4.avif'),
     alt: 'Couple enjoying coffee',
     className: styles.imageLarge,
   },

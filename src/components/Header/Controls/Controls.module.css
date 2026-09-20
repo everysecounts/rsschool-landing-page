@@ -4,16 +4,31 @@
   gap: 24px;
   padding-left: 44px;
 
+  @media screen and (width <= 1024px) {
+    position: relative;
+    z-index: 20;
+  }
+
   .menu {
     position: relative;
     bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
     color: var(--text-primary);
     font-weight: 600;
     text-decoration: none;
-    display: flex;
-    gap: 8px;
-    height: 28px;
-    align-items: center;
+
+    @media screen and (width <= 1024px) {
+      display: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:not(.menuActive):hover::after {
+        transform: scaleX(1);
+      }
+    }
 
     .menuIcon {
       position: relative;
@@ -34,14 +49,65 @@
       transition: transform 0.3s ease;
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover::after {
+    &.menuActive {
+      cursor: default;
+
+      &::after {
         transform: scaleX(1);
       }
     }
+  }
+}
 
-    &.menuActive::after {
-      transform: scaleX(1);
+.burger {
+  display: none;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border-inverse);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--text-primary);
+
+  @media screen and (width <= 1024px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--background-container);
+      color: var(--text-inverse);
+      cursor: pointer;
+    }
+  }
+
+  span {
+    position: absolute;
+    left: 50%;
+    width: 20px;
+    height: 1.5px;
+    background-color: currentcolor;
+    transition: transform 0.3s ease;
+
+    &:first-child {
+      transform: translate(-50%, -4px);
+    }
+
+    &:last-child {
+      transform: translate(-50%, 4px);
+    }
+  }
+
+  &.burgerOpen {
+    span:first-child {
+      transform: translate(-50%, 0) rotate(45deg);
+    }
+
+    span:last-child {
+      transform: translate(-50%, 0) rotate(-45deg);
     }
   }
 }

@@ -7,9 +7,18 @@
     display: flex;
     gap: 40px;
 
+    @media screen and (width <= 1024px) {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .navItem {
       list-style-type: none;
       height: 28px;
+
+      @media screen and (width <= 1024px) {
+        height: 40px;
+      }
 
       .navLink {
         text-decoration: none;
@@ -19,6 +28,11 @@
         line-height: 150%;
         position: relative;
         letter-spacing: 0.01em;
+
+        @media screen and (width <= 1024px) {
+          font-size: 32px;
+          line-height: 125%;
+        }
 
         &::after {
           content: '';

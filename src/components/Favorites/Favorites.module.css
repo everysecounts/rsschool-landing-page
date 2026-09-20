@@ -25,6 +25,10 @@
     justify-content: space-between;
     align-items: center;
 
+    @media screen and (width < 768px) {
+      justify-content: center;
+    }
+
     .arrow {
       width: 60px;
       height: 60px;
@@ -46,6 +50,10 @@
           color: var(--text-inverse);
           cursor: pointer;
         }
+      }
+
+      @media screen and (width < 768px) {
+        display: none;
       }
     }
 

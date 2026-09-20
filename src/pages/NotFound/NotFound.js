@@ -1,4 +1,4 @@
-import { createElement } from '@/utils';
+import { createElement, getBaseUrl } from '@/utils';
 
 class NotFound {
   constructor() {
@@ -6,7 +6,7 @@ class NotFound {
     this.link = createElement(
       'a',
       {
-        href: import.meta.env.BASE_URL,
+        href: getBaseUrl(),
         className: 'link',
       },
       'Go to home',

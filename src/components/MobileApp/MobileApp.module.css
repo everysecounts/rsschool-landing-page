@@ -6,6 +6,11 @@
   justify-content: space-between;
   align-items: center;
 
+  @media screen and (width < 1440px) {
+    flex-direction: column;
+    gap: 100px;
+  }
+
   .info {
     display: flex;
     flex-direction: column;
@@ -94,7 +99,8 @@
   }
 
   .image {
-    width: 630px;
-    height: 630px;
+    width: clamp(348px, calc(100% - 32px), 630px);
+    height: auto;
+    aspect-ratio: 1;
   }
 }

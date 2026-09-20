@@ -1,4 +1,4 @@
-import { createElement } from '@/utils';
+import { createElement, getHomeHashUrl } from '@/utils';
 import styles from './Navigation.module.css';
 
 const NAV_ITEMS = [
@@ -23,20 +23,12 @@ const NAV_ITEMS = [
   },
 ];
 
-function getBasePath() {
-  return import.meta.env.BASE_URL.replace(/\/$/, '');
-}
-
 function navHref({ hash, homeOnly }) {
-  if (!homeOnly) {
-    return `#${hash}`;
-  }
-  const base = getBasePath();
-  return `${base}/#${hash}`;
+  return homeOnly ? getHomeHashUrl(hash) : `#${hash}`;
 }
 
 class Navigation {
-  constructor() {
+  constructor(onLinkClick) {
     const navItems = NAV_ITEMS.map((item) => {
       const link = createElement(
         'a',
@@ -46,6 +38,11 @@ class Navigation {
         },
         item.label,
       );
+
+      if (onLinkClick) {
+        link.addEventListener('click', onLinkClick);
+      }
+
       return createElement(
         'li',
         {

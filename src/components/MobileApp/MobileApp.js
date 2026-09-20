@@ -1,4 +1,4 @@
-import { createElement, registerSection } from '@/utils';
+import { createElement, getAssetUrl, registerSection } from '@/utils';
 import { appStoreIcon, googlePlayIcon } from './icons';
 import styles from './MobileApp.module.css';
 
@@ -69,7 +69,7 @@ class MobileApp {
 
     const image = createElement('img', {
       className: styles.image,
-      src: `${import.meta.env.BASE_URL}assets/mobile-screens.avif`,
+      src: getAssetUrl('assets/mobile-screens.avif'),
       alt: 'Mobile screens',
     });
 

@@ -1,0 +1,76 @@
+.mobileMenu {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-page);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 100px;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 150%;
+    text-decoration: none;
+
+    .menuIcon {
+      width: 20px;
+      height: 20px;
+    }
+
+    @media screen and (width <= 1024px) {
+      font-size: 32px;
+      line-height: 125%;
+      gap: 16px;
+
+      .menuIcon {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: -4px;
+      left: 0;
+      height: 2px;
+      background-color: var(--text-primary);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:not(.menuActive):hover::after {
+        transform: scaleX(1);
+      }
+    }
+
+    &.menuActive {
+      cursor: default;
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  @media screen and (width > 1024px) {
+    display: none;
+  }
+}

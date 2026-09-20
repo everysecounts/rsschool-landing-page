@@ -1,4 +1,4 @@
-import { createElement, createSvg } from '@/utils';
+import { createElement, createSvg, getBaseUrl } from '@/utils';
 import { LOGO_PATHS } from './logoPaths.js';
 import styles from './Logo.module.css';
 
@@ -26,7 +26,7 @@ function createLogoGraphic() {
 }
 
 class Logo {
-  constructor() {
+  constructor(onLinkClick) {
     const graphic = createElement(
       'span',
       {
@@ -39,11 +39,12 @@ class Logo {
       'a',
       {
         className: styles.link,
-        href: import.meta.env.BASE_URL,
+        href: getBaseUrl(),
         'aria-label': 'Resource Coffee House — Home page',
       },
       graphic,
     );
+    this.element.addEventListener('click', onLinkClick);
   }
 }
 

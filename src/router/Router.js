@@ -1,4 +1,4 @@
-import { clearSections, getSection } from '@/utils';
+import { clearSections, getPathname, getSection } from '@/utils';
 
 class Router {
   constructor(routes, container, onNavigate) {
@@ -29,7 +29,7 @@ class Router {
     if (samePath && link.hash) {
       return;
     }
-    const path = this.getPathname(link.pathname);
+    const path = getPathname(link.pathname);
     if (!this.routes[path]) {
       return;
     }
@@ -38,14 +38,8 @@ class Router {
     this.render();
   }
 
-  getPathname(pathname) {
-    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-    const path = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
-    return path || '/';
-  }
-
   getPath() {
-    return this.getPathname(location.pathname);
+    return getPathname(location.pathname);
   }
 
   render() {

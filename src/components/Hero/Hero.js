@@ -1,4 +1,4 @@
-import { createElement, registerSection } from '@/utils';
+import { createElement, getAssetUrl, getPageUrl, registerSection } from '@/utils';
 import { menuIcon } from '@/components/Header/Controls/menuIcon';
 import styles from './Hero.module.css';
 
@@ -6,7 +6,7 @@ class Hero {
   constructor() {
     const video = createElement('video', {
       className: styles.video,
-      poster: `${import.meta.env.BASE_URL}assets/img-hero.avif`,
+      poster: getAssetUrl('assets/img-hero.avif'),
       autoplay: '',
       muted: '',
       loop: '',
@@ -15,7 +15,7 @@ class Hero {
     });
 
     const source = createElement('source', {
-      // src: `${import.meta.env.BASE_URL}assets/hero.mp4`,
+      // src: getAssetUrl('assets/hero.mp4'),
       type: 'video/mp4',
     });
 
@@ -39,7 +39,7 @@ class Hero {
         'a',
         {
           className: styles.button,
-          href: `${import.meta.env.BASE_URL}menu`,
+          href: getPageUrl('menu'),
         },
         'Menu',
         menuIcon(styles.menuIcon),

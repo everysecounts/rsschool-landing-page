@@ -14,6 +14,11 @@
     display: flex;
     justify-content: space-between;
 
+    @media screen and (width < 1440px) {
+      flex-direction: column;
+      gap: 100px;
+    }
+
     .footerLeft {
       display: flex;
       flex-direction: column;
