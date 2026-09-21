@@ -30,16 +30,15 @@
     flex-direction: column;
     gap: 40px;
 
-    @media screen and (width <= 1024px) {
-      margin: 100px 0 100px 60px;
+    @media screen and (width < 1440px) {
+      margin-left: clamp(60px, calc(60px + (100vw - 768px) * 40 / 672), 100px);
     }
 
     @media screen and (width < 768px) {
-      margin: 80px 30px;
-    }
-
-    @media screen and (width < 480px) {
-      margin: 60px 15px;
+      margin: clamp(60px, calc(60px + (100vw - 480px) * 40 / 288), 100px)
+        clamp(0px, calc((768px - 100vw) * 15 / 288), 15px)
+        clamp(60px, calc(60px + (100vw - 480px) * 40 / 288), 100px)
+        clamp(15px, calc(15px + (100vw - 480px) * 45 / 288), 60px);
     }
 
     .title {
@@ -51,7 +50,7 @@
       color: var(--text-inverse);
 
       @media screen and (width < 768px) {
-        font-size: 42px;
+        font-size: clamp(42px, calc(42px + (100vw - 480px) * 30 / 288), 72px);
         line-height: 115%;
       }
 

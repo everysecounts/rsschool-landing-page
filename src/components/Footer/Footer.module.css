@@ -7,14 +7,17 @@
   background-color: var(--background-container);
   border-radius: 40px;
 
-  @media screen and (width <= 1024px) {
-    padding: 100px 60px;
+  @media screen and (width < 1440px) {
+    padding-left: clamp(60px, calc(60px + (100vw - 1024px) * 40 / 416), 100px);
+    padding-right: clamp(60px, calc(60px + (100vw - 1024px) * 40 / 416), 100px);
   }
 
   @media screen and (width < 768px) {
-    width: calc(100% - 40px);
-    margin: 100px 20px 40px;
-    padding: 60px 15px;
+    width: calc(100% - 2 * clamp(15px, calc(15px + (100vw - 480px) * 5 / 288), 20px));
+    margin-left: clamp(15px, calc(15px + (100vw - 480px) * 5 / 288), 20px);
+    margin-right: clamp(15px, calc(15px + (100vw - 480px) * 5 / 288), 20px);
+    padding: clamp(60px, calc(60px + (100vw - 480px) * 40 / 288), 100px)
+      clamp(15px, calc(15px + (100vw - 480px) * 45 / 288), 60px);
   }
 
   .content {
@@ -38,6 +41,8 @@
       max-width: 530px;
 
       .title {
+        display: flex;
+        flex-direction: column;
         font-weight: 600;
         font-size: 60px;
         line-height: 125%;

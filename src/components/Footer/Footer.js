@@ -102,7 +102,7 @@ class Footer {
         createElement(
           'p',
           { className: styles.title },
-          'Sip, Savor, Smile. ',
+          createElement('span', {}, 'Sip, Savor, Smile.'),
           createElement('span', { className: styles.titleAccent }, 'It’s coffee time!'),
         ),
         socialLinks,
