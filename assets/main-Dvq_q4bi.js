@@ -728,12 +728,12 @@ var Hero = class {
 		const video = createElement("video", {
 			className: Hero_module_default.video,
 			poster: getAssetUrl("assets/img-hero.avif"),
-			autoplay: "",
-			muted: "",
-			loop: "",
-			playsinline: "",
 			preload: "metadata"
 		});
+		video.autoplay = true;
+		video.muted = true;
+		video.loop = true;
+		video.playsInline = true;
 		const source = createElement("source", {
 			src: getAssetUrl("assets/hero.mp4"),
 			type: "video/mp4"
@@ -1873,4 +1873,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-mWibT1nH.js.map
+//# sourceMappingURL=main-Dvq_q4bi.js.map
