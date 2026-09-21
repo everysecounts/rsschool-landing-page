@@ -17,4 +17,5 @@ body {
   font-family: var(--font-family);
   color: var(--text-primary);
   background-color: var(--background-page);
+  min-width: 380px;
 }
