@@ -19,9 +19,19 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
 
     @media screen and (width < 1440px) {
       display: flex;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--background-container);
+        color: var(--text-inverse);
+      }
     }
 
     svg {
