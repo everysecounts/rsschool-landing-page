@@ -6,6 +6,7 @@
   overflow: hidden;
   border: 1px solid var(--border-primary);
   border-radius: 40px;
+  cursor: pointer;
 
   .imageWrapper {
     position: relative;
@@ -25,12 +26,12 @@
       transform: translate(-50%, -50%);
       transition: transform 0.3s ease;
     }
+  }
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        .image {
-          transform: translate(-50%, -50%) scale(0.95);
-        }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      .image {
+        transform: translate(-50%, -50%) scale(0.95);
       }
     }
   }
