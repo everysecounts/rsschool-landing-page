@@ -9,14 +9,23 @@ class App {
     this.main = new Main();
     this.router = new Router(routes, this.main.element, (path) => {
       this.header.setActivePath(path);
+      this.setLayout(path);
     });
     this.header = new Header((event, link) => {
       this.router.handleLinkClick(event, link);
     });
     this.footer = new Footer();
   }
-  start() {
+
+  setLayout(path) {
+    if (!routes[path]) {
+      this.container.replaceChildren(this.main.element);
+      return;
+    }
     this.container.replaceChildren(this.header.element, this.main.element, this.footer.element);
+  }
+
+  start() {
     this.router.start();
   }
 }
