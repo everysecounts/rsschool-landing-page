@@ -1,1 +1,1 @@
-export { About } from './About.js';
+export { About } from './About';

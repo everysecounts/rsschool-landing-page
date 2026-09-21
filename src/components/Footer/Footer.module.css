@@ -1,4 +1,5 @@
 .footer {
+  width: calc(100% - 80px);
   max-width: 1360px;
   padding: 100px;
   margin: 100px auto 40px;
@@ -6,18 +7,14 @@
   background-color: var(--background-container);
   border-radius: 40px;
 
-  @media screen and (width < 1440px) {
-    margin: 100px 20px 40px;
-  }
-
   @media screen and (width <= 1024px) {
-    margin: 100px 40px 40px;
     padding: 100px 60px;
   }
 
   @media screen and (width < 768px) {
-    margin: 100px clamp(20px, 5.2vw, 40px) 40px;
-    padding: clamp(60px, 16vw, 100px) 15px;
+    width: calc(100% - 40px);
+    margin: 100px 20px 40px;
+    padding: 60px 15px;
   }
 
   .content {

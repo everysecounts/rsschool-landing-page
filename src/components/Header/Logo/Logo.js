@@ -44,7 +44,11 @@ class Logo {
       },
       graphic,
     );
-    this.element.addEventListener('click', onLinkClick);
+    if (onLinkClick) {
+      this.element.addEventListener('click', (event) => {
+        onLinkClick(event, this.element);
+      });
+    }
   }
 }
 

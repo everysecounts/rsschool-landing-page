@@ -1,1 +1,1 @@
-export { MobileApp } from './MobileApp.js';
+export { MobileApp } from './MobileApp';

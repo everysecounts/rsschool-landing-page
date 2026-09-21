@@ -1,1 +1,1 @@
-export { PRODUCTS, FAVORITE_PRODUCTS } from './products.js';
+export { PRODUCTS, FAVORITE_PRODUCTS } from './products';

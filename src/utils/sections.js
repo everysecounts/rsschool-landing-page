@@ -1,16 +1,23 @@
-const sections = new Map();
+const pageSections = new Map();
+const permanentSections = new Map();
 
-function registerSection(id, element) {
-  if (!id || !element) return;
-  sections.set(id, element);
+function registerSection(id, element, options = {}) {
+  if (!id || !element) {
+    return;
+  }
+  if (options.permanent) {
+    permanentSections.set(id, element);
+    return;
+  }
+  pageSections.set(id, element);
 }
 
 function getSection(id) {
-  return sections.get(id) ?? null;
+  return pageSections.get(id) ?? permanentSections.get(id) ?? null;
 }
 
 function clearSections() {
-  sections.clear();
+  pageSections.clear();
 }
 
 export { registerSection, getSection, clearSections };

@@ -1,4 +1,4 @@
-export { createElement } from './createElement.js';
-export { createSvg } from './createSvg.js';
-export { registerSection, getSection, clearSections } from './sections.js';
-export { getBaseUrl, getPageUrl, getHomeHashUrl, getAssetUrl, getPathname } from './paths.js';
+export { createElement } from './createElement';
+export { createSvg } from './createSvg';
+export { registerSection, getSection, clearSections } from './sections';
+export { getBaseUrl, getPageUrl, getHomeHashUrl, getAssetUrl, getPathname } from './paths';

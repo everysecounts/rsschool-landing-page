@@ -4,8 +4,8 @@ import { About } from '@/components/About';
 import { MobileApp } from '@/components/MobileApp';
 
 class Home {
-  constructor() {
-    this.sections = [new Hero(), new Favorites(), new About(), new MobileApp()];
+  constructor(onLinkClick) {
+    this.sections = [new Hero(onLinkClick), new Favorites(), new About(), new MobileApp()];
   }
 
   mount(container) {

@@ -8,29 +8,32 @@ class Router {
   }
 
   start() {
-    document.addEventListener('click', (event) => {
-      this.handleClick(event);
-    });
     window.addEventListener('popstate', () => {
       this.render();
     });
     this.render();
   }
 
-  handleClick(event) {
-    const link = event.target.closest('a');
-    if (!link || link.origin !== location.origin) {
+  handleLinkClick(event, link) {
+    if (link.origin !== window.location.origin) {
       return;
     }
-    if (link.hasAttribute('download') || link.target === '_blank') {
-      return;
-    }
-    const samePath = link.pathname === location.pathname;
-    if (samePath && link.hash) {
+    if (link.target === '_blank' || link.hasAttribute('download')) {
       return;
     }
     const path = getPathname(link.pathname);
     if (!this.routes[path]) {
+      return;
+    }
+    const samePath = path === this.getPath();
+    const hasHash = Boolean(link.hash);
+    if (samePath && hasHash) {
+      event.preventDefault();
+      const nextUrl = `${link.pathname}${link.search}${link.hash}`;
+      if (`${location.pathname}${location.search}${location.hash}` !== nextUrl) {
+        history.pushState(null, '', nextUrl);
+      }
+      this.scrollToHash();
       return;
     }
     event.preventDefault();
@@ -46,7 +49,7 @@ class Router {
     clearSections();
     const path = this.getPath();
     const Page = this.routes[path] || this.routes['*'];
-    new Page().mount(this.container);
+    new Page(this.handleLinkClick.bind(this)).mount(this.container);
     this.onNavigate?.(path);
     this.scrollToHash();
   }

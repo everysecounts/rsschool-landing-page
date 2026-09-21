@@ -4,14 +4,18 @@ import { createMenuLink } from '../MenuLink';
 import styles from './MobileMenu.module.css';
 
 class MobileMenu {
-  constructor(onClose) {
-    this.navigation = new Navigation(onClose);
-    this.menuLink = createMenuLink(styles.menu, styles.menuIcon);
-    this.menuLink.addEventListener('click', (event) => {
+  constructor(onClose, onLinkClick) {
+    this.navigation = new Navigation((event, link) => {
+      onClose();
+      onLinkClick?.(event, link);
+    });
+    this.menuLink = createMenuLink(styles.menu, styles.menuIcon, (event, link) => {
       if (this.menuLink.classList.contains(styles.menuActive)) {
         event.preventDefault();
+        return;
       }
       onClose();
+      onLinkClick?.(event, link);
     });
 
     this.element = createElement(

@@ -40,7 +40,9 @@ class Navigation {
       );
 
       if (onLinkClick) {
-        link.addEventListener('click', onLinkClick);
+        link.addEventListener('click', (event) => {
+          onLinkClick(event, link);
+        });
       }
 
       return createElement(

@@ -4,13 +4,14 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 import styles from './Controls.module.css';
 
 class Controls {
-  constructor(onBurgerClick) {
+  constructor(onBurgerClick, onLinkClick) {
     const themeSwitcher = new ThemeSwitcher();
-    this.menuLink = createMenuLink(styles.menu, styles.menuIcon);
-    this.menuLink.addEventListener('click', (event) => {
+    this.menuLink = createMenuLink(styles.menu, styles.menuIcon, (event, link) => {
       if (this.menuLink.classList.contains(styles.menuActive)) {
         event.preventDefault();
+        return;
       }
+      onLinkClick?.(event, link);
     });
 
     this.burger = createElement(

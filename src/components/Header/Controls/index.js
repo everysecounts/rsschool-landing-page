@@ -1,1 +1,1 @@
-export { Controls } from './Controls.js';
+export { Controls } from './Controls';

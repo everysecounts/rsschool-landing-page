@@ -1,12 +1,11 @@
-import { createElement } from '@/utils';
+import { Catalog } from '@/components/Catalog';
 
 class Menu {
   constructor() {
-    const title = createElement('h1', {}, 'Menu');
-    this.element = title;
+    this.sections = [new Catalog()];
   }
   mount(container) {
-    container.replaceChildren(this.element);
+    container.replaceChildren(...this.sections.map((section) => section.element));
   }
 }
 

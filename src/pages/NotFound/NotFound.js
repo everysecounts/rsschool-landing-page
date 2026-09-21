@@ -1,7 +1,7 @@
 import { createElement, getBaseUrl } from '@/utils';
 
 class NotFound {
-  constructor() {
+  constructor(onLinkClick) {
     this.text = createElement('p', {}, 'Page not found');
     this.link = createElement(
       'a',
@@ -11,6 +11,12 @@ class NotFound {
       },
       'Go to home',
     );
+
+    if (onLinkClick) {
+      this.link.addEventListener('click', (event) => {
+        onLinkClick(event, this.link);
+      });
+    }
   }
 
   mount(container) {

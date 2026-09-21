@@ -1,4 +1,4 @@
-import { createElement } from '@/utils';
+import { createElement, registerSection } from '@/utils';
 import { contactIcons, socialIcons } from './icons';
 import styles from './Footer.module.css';
 
@@ -90,6 +90,8 @@ class Footer {
       createElement('h2', { className: styles.contactTitle }, 'Contact us'),
       contactList,
     );
+
+    registerSection('contact-us', footerRight, { permanent: true });
 
     const content = createElement(
       'div',

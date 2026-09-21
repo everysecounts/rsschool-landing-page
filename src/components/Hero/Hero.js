@@ -3,7 +3,7 @@ import { menuIcon } from '@/components/Header/Controls/menuIcon';
 import styles from './Hero.module.css';
 
 class Hero {
-  constructor() {
+  constructor(onLinkClick) {
     const video = createElement('video', {
       className: styles.video,
       poster: getAssetUrl('assets/img-hero.avif'),
@@ -21,6 +21,22 @@ class Hero {
 
     video.append(source);
 
+    const menuLink = createElement(
+      'a',
+      {
+        className: styles.button,
+        href: getPageUrl('menu'),
+      },
+      'Menu',
+      menuIcon(styles.menuIcon),
+    );
+
+    if (onLinkClick) {
+      menuLink.addEventListener('click', (event) => {
+        onLinkClick(event, menuLink);
+      });
+    }
+
     const content = createElement(
       'div',
       { className: styles.content },
@@ -35,15 +51,7 @@ class Hero {
         { className: styles.description },
         'With its inviting atmosphere and delicious coffee options, the Coffee House Resource is a popular destination for coffee lovers and those seeking a warm and inviting space to enjoy their favorite beverage.',
       ),
-      createElement(
-        'a',
-        {
-          className: styles.button,
-          href: getPageUrl('menu'),
-        },
-        'Menu',
-        menuIcon(styles.menuIcon),
-      ),
+      menuLink,
     );
 
     this.element = createElement(
