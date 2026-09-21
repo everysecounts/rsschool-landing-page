@@ -7,12 +7,20 @@
   flex-direction: column;
   gap: 40px;
 
+  @media screen and (width < 768px) {
+    padding: 100px 0;
+  }
+
   .title {
     text-align: center;
     font-weight: 600;
     font-size: 60px;
     line-height: 125%;
     letter-spacing: 0.03em;
+
+    @media screen and (width < 768px) {
+      font-size: 32px;
+    }
 
     .titleAccent {
       font-style: italic;
@@ -66,8 +74,8 @@
       text-align: center;
 
       .image {
-        width: 480px;
-        height: 480px;
+        width: 100%;
+        aspect-ratio: 1;
         object-fit: contain;
         margin-bottom: 20px;
       }
@@ -85,6 +93,10 @@
         font-size: 16px;
         line-height: 150%;
         letter-spacing: 0.01em;
+
+        @media screen and (width < 768px) {
+          letter-spacing: 0;
+        }
       }
 
       .price {

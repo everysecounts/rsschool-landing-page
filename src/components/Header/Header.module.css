@@ -10,6 +10,14 @@
     padding: 20px;
   }
 
+  @media screen and (width <= 1024px) {
+    padding: 20px 40px;
+  }
+
+  @media screen and (width <= 480px) {
+    padding: 20px 15px;
+  }
+
   .desktopNavigation {
     @media screen and (width <= 1024px) {
       display: none;

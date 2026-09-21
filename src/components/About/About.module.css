@@ -6,11 +6,19 @@
   flex-direction: column;
   gap: 40px;
 
+  @media screen and (width <= 480px) {
+    margin: 0 auto 100px;
+  }
+
   .description {
     font-weight: 600;
     font-size: 60px;
     line-height: 125%;
     letter-spacing: 0.034em;
+
+    @media screen and (width <= 480px) {
+      font-size: 32px;
+    }
 
     .descriptionAccent {
       font-style: italic;
@@ -60,6 +68,14 @@
         object-fit: cover;
         transition: transform 0.3s ease;
         transform: scale(1.1);
+
+        @media screen and (width <= 768px) {
+          transform: scale(1.05);
+        }
+
+        @media screen and (width <= 480px) {
+          transform: scale(1.25);
+        }
       }
 
       @media screen and (width <= 768px) {

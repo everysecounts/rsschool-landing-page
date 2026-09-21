@@ -9,6 +9,10 @@
     z-index: 20;
   }
 
+  @media screen and (width <= 480px) {
+    gap: 12px;
+  }
+
   .menu {
     position: relative;
     bottom: 2px;

@@ -11,6 +11,10 @@
     gap: 100px;
   }
 
+  @media screen and (width <= 480px) {
+    gap: 40px;
+  }
+
   .info {
     display: flex;
     flex-direction: column;
@@ -18,11 +22,19 @@
     max-width: 630px;
     width: 100%;
 
+    @media screen and (width <= 768px) {
+      max-width: none;
+    }
+
     .title {
       font-weight: 600;
       font-size: 60px;
       line-height: 125%;
       letter-spacing: 0.03em;
+
+      @media screen and (width <= 480px) {
+        font-size: 32px;
+      }
 
       .titleAccent {
         color: var(--text-accent);
@@ -40,6 +52,7 @@
     .storeLinks {
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
 
       .storeLink {
         display: flex;
