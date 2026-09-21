@@ -15,7 +15,7 @@ class Hero {
     });
 
     const source = createElement('source', {
-      // src: getAssetUrl('assets/hero.mp4'),
+      src: getAssetUrl('assets/hero.mp4'),
       type: 'video/mp4',
     });
 
