@@ -1823,21 +1823,29 @@ var Menu = class {
 		container.replaceChildren(...this.sections.map((section) => section.element));
 	}
 };
+var NotFound_module_default = {
+	page: "_page_cssot_1",
+	title: "_title_cssot_10",
+	text: "_text_cssot_17",
+	link: "_link_cssot_22"
+};
 //#endregion
 //#region src/pages/NotFound/NotFound.js
 var NotFound = class {
 	constructor(onLinkClick) {
-		this.text = createElement("p", {}, "Page not found");
+		this.title = createElement("h1", { className: NotFound_module_default.title }, "404");
+		this.text = createElement("p", { className: NotFound_module_default.text }, "Page not found");
 		this.link = createElement("a", {
 			href: getBaseUrl(),
-			className: "link"
+			className: NotFound_module_default.link
 		}, "Go to home");
 		if (onLinkClick) this.link.addEventListener("click", (event) => {
 			onLinkClick(event, this.link);
 		});
+		this.element = createElement("section", { className: NotFound_module_default.page }, this.title, this.text, this.link);
 	}
 	mount(container) {
-		container.replaceChildren(this.text, this.link);
+		container.replaceChildren(this.element);
 	}
 };
 //#endregion
@@ -1855,14 +1863,21 @@ var App = class {
 		this.main = new Main();
 		this.router = new Router(routes, this.main.element, (path) => {
 			this.header.setActivePath(path);
+			this.setLayout(path);
 		});
 		this.header = new Header((event, link) => {
 			this.router.handleLinkClick(event, link);
 		});
 		this.footer = new Footer();
 	}
-	start() {
+	setLayout(path) {
+		if (!routes[path]) {
+			this.container.replaceChildren(this.main.element);
+			return;
+		}
 		this.container.replaceChildren(this.header.element, this.main.element, this.footer.element);
+	}
+	start() {
 		this.router.start();
 	}
 };
@@ -1873,4 +1888,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-Dvq_q4bi.js.map
+//# sourceMappingURL=main-CZASwobY.js.map

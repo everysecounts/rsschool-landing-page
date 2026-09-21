@@ -1234,6 +1234,49 @@
     }
   }
 }
+._page_cssot_1 {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+
+  ._title_cssot_10 {
+    font-weight: 600;
+    font-size: clamp(100px, 15vw, 180px);
+    line-height: 100%;
+    color: var(--text-primary);
+  }
+
+  ._text_cssot_17 {
+    font-size: 24px;
+    line-height: 125%;
+  }
+
+  ._link_cssot_22 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    min-height: 50px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    border: 1px solid var(--background-container);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--background-container);
+        border-color: var(--background-container);
+        color: var(--text-inverse);
+      }
+    }
+  }
+}
 :root {
   --font-family: inter, sans-serif;
   --text-primary: #403f3d;
