@@ -4,6 +4,6 @@
   padding-inline: clamp(20px, 5.2vw, 40px);
 
   @media screen and (width < 768px) {
-    padding-inline: 15px;
+    padding-inline: clamp(15px, calc(15px + (100vw - 480px) * 25 / 288), 40px);
   }
 }

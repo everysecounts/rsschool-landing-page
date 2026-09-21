@@ -16,8 +16,8 @@
     line-height: 125%;
     letter-spacing: 0.034em;
 
-    @media screen and (width <= 480px) {
-      font-size: 32px;
+    @media screen and (width < 768px) {
+      font-size: clamp(32px, calc(32px + (100vw - 480px) * 28 / 288), 60px);
     }
 
     .descriptionAccent {

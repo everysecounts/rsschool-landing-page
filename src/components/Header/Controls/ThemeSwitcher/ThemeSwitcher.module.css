@@ -23,11 +23,6 @@
       background-color 0.2s ease,
       color 0.2s ease;
 
-    @media screen and (width <= 1024px) {
-      width: 44px;
-      height: 40px;
-    }
-
     &:not(:disabled) {
       cursor: pointer;
     }
