@@ -1,11 +1,11 @@
-import { createElement, getAssetUrl } from '@/utils';
+import { createElement } from '@/utils';
 import styles from './CardCatalog.module.css';
 
 class CardCatalog {
   constructor(product) {
     const image = createElement('img', {
       className: styles.image,
-      src: getAssetUrl(product.image),
+      src: product.image,
       alt: product.name,
     });
 

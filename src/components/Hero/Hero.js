@@ -7,12 +7,13 @@ class Hero {
     const video = createElement('video', {
       className: styles.video,
       poster: getAssetUrl('assets/img-hero.avif'),
-      autoplay: '',
-      muted: '',
-      loop: '',
-      playsinline: '',
       preload: 'metadata',
     });
+
+    video.autoplay = true;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
 
     const source = createElement('source', {
       src: getAssetUrl('assets/hero.mp4'),
