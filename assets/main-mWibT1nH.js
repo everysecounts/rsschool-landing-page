@@ -1706,7 +1706,7 @@ var CardCatalog = class {
 	constructor(product) {
 		const image = createElement("img", {
 			className: CardCatalog_module_default.image,
-			src: getAssetUrl(product.image),
+			src: product.image,
 			alt: product.name
 		});
 		const imageWrapper = createElement("div", { className: CardCatalog_module_default.imageWrapper }, image);
@@ -1873,4 +1873,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-D-Eo-hJL.js.map
+//# sourceMappingURL=main-mWibT1nH.js.map
