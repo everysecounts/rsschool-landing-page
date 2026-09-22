@@ -37,8 +37,6 @@ class Catalog {
       'div',
       {
         className: styles.tabs,
-        role: 'tablist',
-        'aria-label': 'Menu categories',
       },
       ...CATEGORIES.map((category, index) => this.createTab(category, index)),
     );
@@ -88,8 +86,6 @@ class Catalog {
       {
         className: `${styles.tab} ${isActive ? styles.tabActive : ''}`,
         type: 'button',
-        role: 'tab',
-        'aria-selected': String(isActive),
       },
       iconWrapper,
       label,
