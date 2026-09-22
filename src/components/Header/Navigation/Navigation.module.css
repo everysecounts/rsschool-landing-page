@@ -17,6 +17,14 @@
       gap: 60px;
     }
 
+    @media screen and (width <= 768px) and (height <= 750px) {
+      gap: clamp(50px, calc(50px + (100vh - 650px) * 10 / 100), 60px);
+    }
+
+    @media screen and (width <= 768px) and (height <= 650px) {
+      gap: clamp(45px, calc(45px + (100vh - 600px) * 5 / 50), 50px);
+    }
+
     .navItem {
       list-style-type: none;
       height: 28px;
