@@ -27,7 +27,7 @@ const IMAGES = [
 class About {
   constructor() {
     const description = createElement(
-      'p',
+      'h2',
       { className: styles.description },
       'Resource is ',
       createElement('span', { className: styles.descriptionAccent }, 'the perfect and cozy place'),
