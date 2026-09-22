@@ -1586,7 +1586,7 @@ var IMAGES = [
 ];
 var About = class {
 	constructor() {
-		const description = createElement("p", { className: About_module_default.description }, "Resource is ", createElement("span", { className: About_module_default.descriptionAccent }, "the perfect and cozy place"), " where you can enjoy a variety of hot beverages, relax, catch up with friends, or get some work done.");
+		const description = createElement("h2", { className: About_module_default.description }, "Resource is ", createElement("span", { className: About_module_default.descriptionAccent }, "the perfect and cozy place"), " where you can enjoy a variety of hot beverages, relax, catch up with friends, or get some work done.");
 		const images = createElement("div", { className: About_module_default.images }, ...IMAGES.map(({ src, alt, className }) => createElement("div", { className: About_module_default.imageContainer }, createElement("img", {
 			className,
 			src,
@@ -1754,11 +1754,7 @@ var Catalog = class {
 	constructor() {
 		this.activeCategory = "coffee";
 		this.title = createElement("h1", { className: Catalog_module_default.title }, "Behind each of our cups ", "hides an ", createElement("span", { className: Catalog_module_default.titleAccent }, "amazing surprise"));
-		this.tabs = createElement("div", {
-			className: Catalog_module_default.tabs,
-			role: "tablist",
-			"aria-label": "Menu categories"
-		}, ...CATEGORIES.map((category, index) => this.createTab(category, index)));
+		this.tabs = createElement("div", { className: Catalog_module_default.tabs }, ...CATEGORIES.map((category, index) => this.createTab(category, index)));
 		this.products = createElement("div", { className: Catalog_module_default.products });
 		this.loadMoreButton = createElement("button", {
 			className: Catalog_module_default.loadMore,
@@ -1780,9 +1776,7 @@ var Catalog = class {
 		const label = createElement("span", { className: Catalog_module_default.label }, category.label);
 		return createElement("button", {
 			className: `${Catalog_module_default.tab} ${isActive ? Catalog_module_default.tabActive : ""}`,
-			type: "button",
-			role: "tab",
-			"aria-selected": String(isActive)
+			type: "button"
 		}, iconWrapper, label);
 	}
 	createLoadMoreIcon() {
@@ -1888,4 +1882,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-CZASwobY.js.map
+//# sourceMappingURL=main-5euo3pOs.js.map
