@@ -1,0 +1,147 @@
+.section {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+
+  .loadMore {
+    display: none;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border: 1px solid var(--background-container);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--text-primary);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    @media screen and (width < 1440px) {
+      display: flex;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--background-container);
+        color: var(--text-inverse);
+      }
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .title {
+    max-width: 800px;
+    font-weight: 600;
+    font-size: clamp(32px, calc(32px + (28 * (100vw - 380px) / 388)), 60px);
+    line-height: 125%;
+    text-align: center;
+    letter-spacing: 0.03em;
+
+    .titleAccent {
+      color: var(--text-accent);
+      font-style: italic;
+    }
+
+    @media screen and (width <= 480px) {
+      max-width: 348px;
+    }
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    @media screen and (width <= 480px) {
+      gap: 8px;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 46px;
+      padding: 8px 16px 8px 8px;
+      border: 1px solid var(--border-primary);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--text-primary);
+      font: inherit;
+      cursor: pointer;
+
+      .iconWrapper {
+        flex: 0 0 30px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100px;
+        background: var(--border-primary);
+
+        .icon {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .label {
+        white-space: nowrap;
+      }
+    }
+
+    .tabActive {
+      border-color: var(--background-container);
+      background: var(--background-container);
+      color: var(--text-inverse);
+      cursor: default;
+
+      .iconWrapper {
+        background: var(--background-page);
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .tab:not(.tabActive):hover {
+        border-color: var(--background-container);
+        background: var(--background-container);
+        color: var(--text-inverse);
+
+        .iconWrapper {
+          background: var(--background-page);
+        }
+      }
+    }
+  }
+
+  .products {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+
+    @media screen and (width < 1440px) {
+      > :nth-child(n + 7) {
+        display: none;
+      }
+    }
+
+    @media screen and (width <= 768px) {
+      > :nth-child(n + 5) {
+        display: none;
+      }
+    }
+  }
+}

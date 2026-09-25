@@ -1,0 +1,75 @@
+.switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px;
+  border: 1px solid var(--border-primary);
+  border-radius: 100px;
+  background-color: transparent;
+
+  .option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--switch-icon-off);
+    background-color: transparent;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+
+    @media screen and (width <= 768px) {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  .sun {
+    color: var(--switch-icon-off);
+  }
+
+  .moon {
+    color: var(--switch-icon-off);
+  }
+
+  &[data-theme='light'] {
+    .sun {
+      color: var(--switch-icon-on);
+      background-color: var(--switch-active-bg);
+    }
+  }
+
+  &[data-theme='dark'] {
+    justify-content: flex-end;
+
+    .moon {
+      color: var(--switch-icon-on);
+      background-color: var(--switch-active-bg);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &[data-theme='light'] {
+      .moon:not(:disabled):hover {
+        color: var(--switch-icon-on);
+        background-color: var(--switch-hover-bg);
+      }
+    }
+
+    &[data-theme='dark'] {
+      .sun:not(:disabled):hover {
+        color: var(--switch-icon-on);
+        background-color: var(--switch-hover-bg);
+      }
+    }
+  }
+}

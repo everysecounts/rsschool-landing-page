@@ -1,0 +1,119 @@
+.section {
+  width: 100%;
+  max-width: 1360px;
+  display: flex;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+
+  @media screen and (width < 1440px) {
+    flex-direction: column;
+    gap: 100px;
+  }
+
+  @media screen and (width <= 480px) {
+    gap: 40px;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 630px;
+    width: 100%;
+
+    @media screen and (width <= 768px) {
+      max-width: none;
+    }
+
+    .title {
+      font-weight: 600;
+      font-size: 60px;
+      line-height: 125%;
+      letter-spacing: 0.03em;
+
+      @media screen and (width < 768px) {
+        font-size: clamp(32px, 8vw, 60px);
+      }
+
+      .titleAccent {
+        color: var(--text-accent);
+        font-style: italic;
+      }
+    }
+
+    .description {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 150%;
+      letter-spacing: 0.01em;
+    }
+
+    .storeLinks {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      .storeLink {
+        display: flex;
+        gap: 8px;
+        border: 1px solid var(--background-container);
+        border-radius: 100px;
+        width: 200px;
+        height: 64px;
+        padding: 12px 20px;
+        color: var(--text-primary);
+        text-decoration: none;
+        align-items: center;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            background-color: var(--background-container);
+            border-color: var(--background-container);
+            color: var(--text-inverse);
+
+            .storeText {
+              .storeLabel,
+              .storeName {
+                color: var(--text-inverse);
+              }
+            }
+          }
+        }
+
+        .storeIcon {
+          transition: color 0.3s ease;
+        }
+
+        .storeText {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          font-weight: 600;
+
+          .storeLabel,
+          .storeName {
+            transition: color 0.3s ease;
+            color: var(--text-primary);
+          }
+
+          .storeLabel {
+            font-size: 10px;
+            line-height: 140%;
+          }
+
+          .storeName {
+            font-size: 16px;
+            line-height: 150%;
+          }
+        }
+      }
+    }
+  }
+
+  .image {
+    width: clamp(348px, calc(100% - 32px), 630px);
+    height: auto;
+    aspect-ratio: 1;
+  }
+}

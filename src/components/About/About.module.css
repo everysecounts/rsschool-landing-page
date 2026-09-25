@@ -1,0 +1,109 @@
+.section {
+  width: 100%;
+  max-width: 1360px;
+  margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  @media screen and (width <= 480px) {
+    margin: 0 auto 100px;
+  }
+
+  .description {
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 125%;
+    letter-spacing: 0.034em;
+
+    @media screen and (width < 768px) {
+      font-size: clamp(32px, calc(32px + (100vw - 480px) * 28 / 288), 60px);
+    }
+
+    .descriptionAccent {
+      font-style: italic;
+      color: var(--text-accent);
+    }
+  }
+
+  .images {
+    display: flex;
+    flex-flow: column wrap;
+    align-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    height: 1060px;
+    gap: 40px;
+
+    @media screen and (width <= 768px) {
+      flex-flow: column nowrap;
+      height: auto;
+    }
+
+    .imageContainer {
+      width: calc((100% - 40px) / 2);
+      flex: 0 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+
+      &:nth-child(1),
+      &:nth-child(4) {
+        height: 590px;
+      }
+
+      &:nth-child(2),
+      &:nth-child(3) {
+        height: 430px;
+
+        @media screen and (width <= 768px) {
+          display: none;
+        }
+      }
+
+      .imageLarge,
+      .imageSmall {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        transform: scale(1.1);
+
+        @media screen and (width <= 768px) {
+          transform: scale(1.05);
+        }
+
+        @media screen and (width <= 480px) {
+          transform: scale(1.25);
+        }
+      }
+
+      @media screen and (width <= 768px) {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 660 / 590;
+      }
+
+      &.imageLarge {
+        height: 590px;
+      }
+
+      &.imageSmall {
+        height: 430px;
+      }
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .images {
+      .imageContainer {
+        &:hover {
+          .imageLarge,
+          .imageSmall {
+            transform: scale(1);
+          }
+        }
+      }
+    }
+  }
+}

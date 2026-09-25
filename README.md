@@ -1,1 +1,1 @@
-# rsschool-landing-page
+# landing-page

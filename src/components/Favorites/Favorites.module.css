@@ -1,0 +1,131 @@
+.section {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 100px 5px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  @media screen and (width < 768px) {
+    padding-bottom: clamp(0px, calc((768px - 100vw) * 100 / 288), 100px);
+  }
+
+  .title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 125%;
+    letter-spacing: 0.03em;
+
+    @media screen and (width < 768px) {
+      font-size: clamp(32px, calc(32px + (100vw - 480px) * 28 / 288), 60px);
+    }
+
+    .titleAccent {
+      font-style: italic;
+      color: var(--text-accent);
+    }
+  }
+
+  .carousel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media screen and (width < 768px) {
+      justify-content: center;
+    }
+
+    .arrow {
+      width: 60px;
+      height: 60px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-primary);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-primary);
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background: var(--background-container);
+          color: var(--text-inverse);
+          cursor: pointer;
+        }
+      }
+
+      @media screen and (width < 768px) {
+        display: none;
+      }
+    }
+
+    .card {
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      .image {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: contain;
+        margin-bottom: 20px;
+
+        @media screen and (width < 768px) {
+          margin-bottom: clamp(20px, calc(20px + (768px - 100vw) * 8 / 288), 28px);
+        }
+      }
+
+      .name {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 125%;
+        letter-spacing: 0.01em;
+      }
+
+      .description {
+        max-width: 480px;
+        margin: 16px 0 0;
+        font-size: 16px;
+        line-height: 150%;
+        letter-spacing: 0.01em;
+
+        @media screen and (width < 768px) {
+          letter-spacing: 0;
+        }
+      }
+
+      .price {
+        margin: 16px 0 0;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 125%;
+      }
+    }
+  }
+
+  .progress {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+
+    .progressItem {
+      width: 40px;
+      height: 4px;
+      border-radius: 100px;
+      background: var(--border-primary);
+
+      &.progressItemActive {
+        background: var(--text-primary);
+      }
+    }
+  }
+}
