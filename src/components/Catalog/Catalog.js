@@ -24,6 +24,9 @@ const CATEGORIES = [
 class Catalog {
   constructor() {
     this.activeCategory = 'coffee';
+    this.isExpanded = false;
+    this.isMobile = window.innerWidth <= 768;
+    this.handleResize = this.handleResize.bind(this);
 
     this.title = createElement(
       'h1',
@@ -47,6 +50,8 @@ class Catalog {
       className: styles.products,
     });
 
+    this.loadMoreIcon = this.createLoadMoreIcon();
+
     this.loadMoreButton = createElement(
       'button',
       {
@@ -54,8 +59,14 @@ class Catalog {
         type: 'button',
         'aria-label': 'Load more products',
       },
-      this.createLoadMoreIcon(),
+      this.loadMoreIcon,
     );
+
+    this.loadMoreButton.addEventListener('click', () => {
+      this.handleLoadMore();
+    });
+
+    window.addEventListener('resize', this.handleResize);
 
     this.renderProducts();
 
@@ -103,7 +114,10 @@ class Catalog {
     if (category === this.activeCategory) {
       return;
     }
+
     this.activeCategory = category;
+    this.isExpanded = false;
+
     [...this.tabs.children].forEach((tab, index) => {
       const isActive = CATEGORIES[index].value === this.activeCategory;
 
@@ -111,6 +125,40 @@ class Catalog {
       tab.setAttribute('aria-selected', String(isActive));
     });
     this.renderProducts();
+  }
+
+  getVisibleCount(totalProducts) {
+    if (this.isExpanded || window.innerWidth > 768) {
+      return totalProducts;
+    }
+    return Math.min(4, totalProducts);
+  }
+
+  handleResize() {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile === this.isMobile) {
+      return;
+    }
+    this.isMobile = isMobile;
+    this.isExpanded = false;
+    this.renderProducts();
+  }
+
+  handleLoadMore() {
+    this.loadMoreButton.disabled = true;
+    this.loadMoreButton.classList.add(styles.loading);
+
+    const handleTransitionEnd = (event) => {
+      if (event.target !== this.loadMoreIcon || event.propertyName !== 'transform') {
+        return;
+      }
+      this.loadMoreButton.removeEventListener('transitionend', handleTransitionEnd);
+      this.loadMoreButton.classList.remove(styles.loading);
+      this.isExpanded = true;
+      this.renderProducts();
+      this.loadMoreButton.disabled = false;
+    };
+    this.loadMoreButton.addEventListener('transitionend', handleTransitionEnd);
   }
 
   createLoadMoreIcon() {
@@ -141,11 +189,12 @@ class Catalog {
 
   renderProducts() {
     const products = PRODUCTS.filter((product) => product.category === this.activeCategory);
-    this.products.replaceChildren(...products.map((product) => new CardCatalog(product).element));
-  }
-
-  mount(container) {
-    container.replaceChildren(this.element);
+    const visibleCount = this.getVisibleCount(products.length);
+    this.products.replaceChildren(
+      ...products.slice(0, visibleCount).map((product) => new CardCatalog(product).element),
+    );
+    const hasMoreProducts = visibleCount < products.length;
+    this.loadMoreButton.style.display = hasMoreProducts ? 'flex' : 'none';
   }
 }
 
