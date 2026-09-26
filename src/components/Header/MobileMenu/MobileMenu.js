@@ -33,7 +33,24 @@ class MobileMenu {
     document.body.style.overflow = 'hidden';
   }
 
-  close() {
+  close(onClosed) {
+    const isOpen = this.element.classList.contains(styles.open);
+
+    if (!isOpen) {
+      onClosed?.();
+      return;
+    }
+
+    const handleTransitionEnd = (event) => {
+      if (event.target === this.element && event.propertyName === 'transform') {
+        onClosed?.();
+      }
+    };
+
+    this.element.addEventListener('transitionend', handleTransitionEnd, {
+      once: true,
+    });
+
     this.element.classList.remove(styles.open);
     document.body.style.overflow = '';
   }

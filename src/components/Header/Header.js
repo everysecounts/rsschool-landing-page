@@ -8,8 +8,11 @@ import styles from './Header.module.css';
 class Header {
   constructor(onLinkClick) {
     this.logo = new Logo((event, link) => {
-      this.closeMobileMenu();
-      onLinkClick?.(event, link);
+      event.preventDefault();
+      this.mobileMenu.close(() => {
+        onLinkClick?.(event, link);
+      });
+      this.controls.setBurgerState(false);
     });
     this.navigation = new Navigation(onLinkClick);
     this.navigation.element.classList.add(styles.desktopNavigation);
@@ -29,6 +32,12 @@ class Header {
       this.controls.element,
       this.mobileMenu.element,
     );
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        this.closeMobileMenu();
+      }
+    });
   }
 
   toggleMobileMenu() {
