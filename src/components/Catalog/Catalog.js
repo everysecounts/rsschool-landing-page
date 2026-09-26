@@ -37,8 +37,10 @@ class Catalog {
       'div',
       {
         className: styles.tabs,
+        role: 'tablist',
+        'aria-label': 'Product categories',
       },
-      ...CATEGORIES.map((category, index) => this.createTab(category, index)),
+      ...CATEGORIES.map((category) => this.createTab(category)),
     );
 
     this.products = createElement('div', {
@@ -69,8 +71,8 @@ class Catalog {
     );
   }
 
-  createTab(category, index) {
-    const isActive = index === 0;
+  createTab(category) {
+    const isActive = category.value === this.activeCategory;
     const icon = createElement('img', {
       className: styles.icon,
       src: category.icon,
@@ -81,15 +83,34 @@ class Catalog {
     const iconWrapper = createElement('span', { className: styles.iconWrapper }, icon);
     const label = createElement('span', { className: styles.label }, category.label);
 
-    return createElement(
+    const button = createElement(
       'button',
       {
         className: `${styles.tab} ${isActive ? styles.tabActive : ''}`,
         type: 'button',
+        role: 'tab',
+        'aria-selected': String(isActive),
       },
       iconWrapper,
       label,
     );
+
+    button.addEventListener('click', () => this.selectCategory(category.value));
+    return button;
+  }
+
+  selectCategory(category) {
+    if (category === this.activeCategory) {
+      return;
+    }
+    this.activeCategory = category;
+    [...this.tabs.children].forEach((tab, index) => {
+      const isActive = CATEGORIES[index].value === this.activeCategory;
+
+      tab.classList.toggle(styles.tabActive, isActive);
+      tab.setAttribute('aria-selected', String(isActive));
+    });
+    this.renderProducts();
   }
 
   createLoadMoreIcon() {
