@@ -1,4 +1,5 @@
 import { createElement } from '@/utils';
+import { Modal } from '@/components/Modal';
 import styles from './CardCatalog.module.css';
 
 class CardCatalog {
@@ -16,7 +17,19 @@ class CardCatalog {
     const price = createElement('p', { className: styles.price }, `$${product.price}`);
     const content = createElement('div', { className: styles.content }, text, price);
 
-    this.element = createElement('article', { className: styles.card }, imageWrapper, content);
+    this.element = createElement(
+      'article',
+      {
+        className: styles.card,
+      },
+      imageWrapper,
+      content,
+    );
+
+    this.element.addEventListener('click', () => {
+      const modal = new Modal(product);
+      document.body.append(modal.element);
+    });
   }
 }
 
