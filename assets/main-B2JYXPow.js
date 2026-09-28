@@ -366,10 +366,10 @@ var Logo = class {
 	}
 };
 var Navigation_module_default = {
-	nav: "_nav_1vll6_1",
-	navList: "_navList_1vll6_6",
-	navItem: "_navItem_1vll6_20",
-	navLink: "_navLink_1vll6_28"
+	nav: "_nav_v7c21_1",
+	navList: "_navList_v7c21_6",
+	navItem: "_navItem_v7c21_28",
+	navLink: "_navLink_v7c21_36"
 };
 //#endregion
 //#region src/components/Header/Navigation/Navigation.js
@@ -417,11 +417,11 @@ var Navigation = class {
 	}
 };
 var MobileMenu_module_default = {
-	mobileMenu: "_mobileMenu_wf01g_1",
-	open: "_open_wf01g_13",
-	menu: "_menu_wf01g_17",
-	menuIcon: "_menuIcon_wf01g_29",
-	menuActive: "_menuActive_wf01g_59"
+	mobileMenu: "_mobileMenu_dhnc3_1",
+	open: "_open_dhnc3_13",
+	menu: "_menu_dhnc3_17",
+	menuIcon: "_menuIcon_dhnc3_37",
+	menuActive: "_menuActive_dhnc3_67"
 };
 //#endregion
 //#region src/components/Header/MobileMenu/MobileMenu.js
@@ -445,7 +445,15 @@ var MobileMenu = class {
 		this.element.classList.add(MobileMenu_module_default.open);
 		document.body.style.overflow = "hidden";
 	}
-	close() {
+	close(onClosed) {
+		if (!this.element.classList.contains(MobileMenu_module_default.open)) {
+			onClosed?.();
+			return;
+		}
+		const handleTransitionEnd = (event) => {
+			if (event.target === this.element && event.propertyName === "transform") onClosed?.();
+		};
+		this.element.addEventListener("transitionend", handleTransitionEnd, { once: true });
 		this.element.classList.remove(MobileMenu_module_default.open);
 		document.body.style.overflow = "";
 	}
@@ -470,8 +478,11 @@ var Header_module_default = {
 var Header = class {
 	constructor(onLinkClick) {
 		this.logo = new Logo((event, link) => {
-			this.closeMobileMenu();
-			onLinkClick?.(event, link);
+			event.preventDefault();
+			this.mobileMenu.close(() => {
+				onLinkClick?.(event, link);
+			});
+			this.controls.setBurgerState(false);
 		});
 		this.navigation = new Navigation(onLinkClick);
 		this.navigation.element.classList.add(Header_module_default.desktopNavigation);
@@ -482,6 +493,9 @@ var Header = class {
 			this.toggleMobileMenu();
 		}, onLinkClick);
 		this.element = createElement("header", { className: Header_module_default.header }, this.logo.element, this.navigation.element, this.controls.element, this.mobileMenu.element);
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape") this.closeMobileMenu();
+		});
 	}
 	toggleMobileMenu() {
 		const isOpen = this.mobileMenu.toggle();
@@ -1479,22 +1493,27 @@ var PRODUCTS = [
 	}
 ];
 var Favorites_module_default = {
-	section: "_section_1bkfs_1",
-	title: "_title_1bkfs_14",
-	titleAccent: "_titleAccent_1bkfs_25",
-	carousel: "_carousel_1bkfs_31",
-	arrow: "_arrow_1bkfs_40",
-	card: "_card_1bkfs_68",
-	image: "_image_1bkfs_76",
-	name: "_name_1bkfs_87",
-	description: "_description_1bkfs_94",
-	price: "_price_1bkfs_106",
-	progress: "_progress_1bkfs_115",
-	progressItem: "_progressItem_1bkfs_120",
-	progressItemActive: "_progressItemActive_1bkfs_126"
+	section: "_section_13vlu_1",
+	progressFill: "_progressFill_13vlu_145",
+	title: "_title_13vlu_14",
+	titleAccent: "_titleAccent_13vlu_25",
+	carousel: "_carousel_13vlu_31",
+	arrow: "_arrow_13vlu_40",
+	viewport: "_viewport_13vlu_69",
+	track: "_track_13vlu_75",
+	card: "_card_13vlu_82",
+	image: "_image_13vlu_91",
+	name: "_name_13vlu_103",
+	description: "_description_13vlu_110",
+	price: "_price_13vlu_122",
+	progress: "_progress_13vlu_131",
+	progressItem: "_progressItem_13vlu_136",
+	progressItemComplete: "_progressItemComplete_13vlu_153",
+	progressItemActive: "_progressItemActive_13vlu_159"
 };
 //#endregion
 //#region src/components/Favorites/Favorites.js
+var SLIDE_DURATION = 5e3;
 function arrowIcon(direction) {
 	return createSvg("svg", {
 		width: 24,
@@ -1518,37 +1537,119 @@ function createArrowButton(direction, label, className) {
 		"aria-label": label
 	}, arrowIcon(direction));
 }
-function createCard(product) {
+function createCard(product, isClone = false) {
 	const image = createElement("img", {
 		className: Favorites_module_default.image,
 		src: product.image,
-		alt: product.name
+		alt: isClone ? "" : product.name
 	});
 	const name = createElement("h3", { className: Favorites_module_default.name }, product.name);
 	const description = createElement("p", { className: Favorites_module_default.description }, product.description);
 	const price = createElement("p", { className: Favorites_module_default.price }, product.price);
-	return createElement("article", { className: Favorites_module_default.card }, image, name, description, price);
+	const card = createElement("article", { className: Favorites_module_default.card }, image, name, description, price);
+	if (isClone) card.setAttribute("aria-hidden", "true");
+	return card;
 }
 function createProgress() {
 	return createElement("div", {
 		className: Favorites_module_default.progress,
 		"aria-hidden": "true"
-	}, ...FAVORITE_PRODUCTS.map((_, index) => createElement("span", { className: index === 0 ? `${Favorites_module_default.progressItem} ${Favorites_module_default.progressItemActive}` : Favorites_module_default.progressItem })));
+	}, ...FAVORITE_PRODUCTS.map(() => createElement("span", { className: Favorites_module_default.progressItem }, createElement("span", { className: Favorites_module_default.progressFill }))));
 }
 var Favorites = class {
 	constructor() {
-		const product = FAVORITE_PRODUCTS[0];
+		this.count = FAVORITE_PRODUCTS.length;
+		this.currentIndex = 0;
+		this.position = 1;
+		this.isAnimating = false;
+		this.timer = null;
+		this.fallbackTimer = null;
 		const title = createElement("h2", { className: Favorites_module_default.title }, "Choose your ", createElement("span", { className: Favorites_module_default.titleAccent }, "favorite"), " coffee");
-		const previousButton = createArrowButton("left", "Previous coffee", Favorites_module_default.arrowPrevious);
-		const nextButton = createArrowButton("right", "Next coffee", Favorites_module_default.arrowNext);
-		const card = createCard(product);
-		const carousel = createElement("div", { className: Favorites_module_default.carousel }, previousButton, card, nextButton);
-		const progress = createProgress();
+		this.previousButton = createArrowButton("left", "Previous coffee", Favorites_module_default.arrowPrevious);
+		this.nextButton = createArrowButton("right", "Next coffee", Favorites_module_default.arrowNext);
+		const firstProduct = FAVORITE_PRODUCTS[0];
+		const lastProduct = FAVORITE_PRODUCTS[this.count - 1];
+		this.track = createElement("div", { className: Favorites_module_default.track }, createCard(lastProduct, true), ...FAVORITE_PRODUCTS.map((product) => createCard(product)), createCard(firstProduct, true));
+		const viewport = createElement("div", { className: Favorites_module_default.viewport }, this.track);
+		const carousel = createElement("div", { className: Favorites_module_default.carousel }, this.previousButton, viewport, this.nextButton);
+		this.progress = createProgress();
+		this.progressItems = [...this.progress.children];
 		this.element = createElement("section", {
 			className: Favorites_module_default.section,
 			id: "favorite-coffee"
-		}, title, carousel, progress);
+		}, title, carousel, this.progress);
+		this.element.style.setProperty("--slide-duration", `${SLIDE_DURATION}ms`);
+		this.previousButton.addEventListener("click", () => {
+			this.showPrevious();
+		});
+		this.nextButton.addEventListener("click", () => {
+			this.showNext();
+		});
+		this.track.addEventListener("transitionend", (event) => {
+			if (event.target === this.track) this.handleTransitionEnd();
+		});
 		registerSection("favorite-coffee", this.element);
+		this.moveTrack(false);
+		this.updateProgress();
+		this.startAutoSlide();
+	}
+	showNext() {
+		if (this.isAnimating) return;
+		this.isAnimating = true;
+		this.position += 1;
+		this.currentIndex = (this.currentIndex + 1) % this.count;
+		this.update();
+	}
+	showPrevious() {
+		if (this.isAnimating) return;
+		this.isAnimating = true;
+		this.position -= 1;
+		this.currentIndex = (this.currentIndex - 1 + this.count) % this.count;
+		this.update();
+	}
+	update() {
+		this.moveTrack(true);
+		this.updateProgress();
+		this.restartAutoSlide();
+		window.clearTimeout(this.fallbackTimer);
+		this.fallbackTimer = window.setTimeout(() => {
+			this.handleTransitionEnd();
+		}, 800);
+	}
+	moveTrack(animate) {
+		this.track.style.transition = animate ? "" : "none";
+		this.track.style.transform = `translateX(${-100 * this.position}%)`;
+		if (!animate) {
+			this.track.offsetHeight;
+			this.track.style.transition = "";
+		}
+	}
+	handleTransitionEnd() {
+		if (!this.isAnimating) return;
+		window.clearTimeout(this.fallbackTimer);
+		if (this.position === this.count + 1) {
+			this.position = 1;
+			this.moveTrack(false);
+		} else if (this.position === 0) {
+			this.position = this.count;
+			this.moveTrack(false);
+		}
+		this.isAnimating = false;
+	}
+	updateProgress() {
+		this.progressItems.forEach((item, index) => {
+			item.classList.remove(Favorites_module_default.progressItemActive, Favorites_module_default.progressItemComplete);
+			if (index === this.currentIndex) item.classList.add(Favorites_module_default.progressItemActive);
+		});
+	}
+	startAutoSlide() {
+		this.timer = window.setTimeout(() => {
+			this.showNext();
+		}, SLIDE_DURATION);
+	}
+	restartAutoSlide() {
+		window.clearTimeout(this.timer);
+		this.startAutoSlide();
 	}
 };
 var About_module_default = {
@@ -1690,6 +1791,188 @@ var Home = class {
 		container.replaceChildren(...this.sections.map((section) => section.element));
 	}
 };
+var Modal_module_default = {
+	overlay: "_overlay_hhu1c_1",
+	content: "_content_hhu1c_11",
+	imageWrapper: "_imageWrapper_hhu1c_20",
+	details: "_details_hhu1c_37",
+	titleGroup: "_titleGroup_hhu1c_43",
+	title: "_title_hhu1c_43",
+	description: "_description_hhu1c_52",
+	size: "_size_hhu1c_57",
+	additives: "_additives_hhu1c_58",
+	sizeTitle: "_sizeTitle_hhu1c_63",
+	additivesTitle: "_additivesTitle_hhu1c_64",
+	sizeOptions: "_sizeOptions_hhu1c_68",
+	additiveOptions: "_additiveOptions_hhu1c_69",
+	sizeOption: "_sizeOption_hhu1c_68",
+	additiveOption: "_additiveOption_hhu1c_69",
+	optionIcon: "_optionIcon_hhu1c_94",
+	optionLabel: "_optionLabel_hhu1c_108",
+	optionActive: "_optionActive_hhu1c_114",
+	total: "_total_hhu1c_140",
+	totalLabel: "_totalLabel_hhu1c_144",
+	totalPrice: "_totalPrice_hhu1c_145",
+	notice: "_notice_hhu1c_152",
+	noticeIcon: "_noticeIcon_hhu1c_158",
+	noticeText: "_noticeText_hhu1c_163",
+	closeButton: "_closeButton_hhu1c_170"
+};
+//#endregion
+//#region src/components/Modal/Modal.js
+var Modal = class {
+	constructor(product) {
+		this.product = product;
+		this.selectedSize = "s";
+		this.selectedAdditives = [];
+		this.previousOverflow = document.body.style.overflow;
+		this.createElement();
+		this.addListeners();
+		document.body.style.overflow = "hidden";
+	}
+	createElement() {
+		const closeButton = createElement("button", {
+			className: Modal_module_default.closeButton,
+			type: "button"
+		}, "Close");
+		const imageWrapper = createElement("div", {
+			className: Modal_module_default.imageWrapper,
+			style: `--product-image: url('${this.product.image}')`,
+			role: "img",
+			"aria-label": this.product.name
+		});
+		const title = createElement("h2", { className: Modal_module_default.title }, this.product.name);
+		const description = createElement("p", { className: Modal_module_default.description }, this.product.description);
+		const titleGroup = createElement("div", { className: Modal_module_default.titleGroup }, title, description);
+		const sizeBlock = this.createSizeBlock();
+		const additivesBlock = this.createAdditivesBlock();
+		const totalLabel = createElement("p", { className: Modal_module_default.totalLabel }, "Total:");
+		this.totalPrice = createElement("p", { className: Modal_module_default.totalPrice });
+		const total = createElement("div", { className: Modal_module_default.total }, totalLabel, this.totalPrice);
+		const notice = createElement("div", { className: Modal_module_default.notice }, this.createNoticeIcon(), createElement("p", { className: Modal_module_default.noticeText }, "The cost is not final. Download our mobile app to see the final price and place your order. Earn loyalty points and enjoy your favorite coffee with up to 20% discount."));
+		const details = createElement("div", { className: Modal_module_default.details }, titleGroup, sizeBlock, additivesBlock, total, notice, closeButton);
+		const content = createElement("div", {
+			className: Modal_module_default.content,
+			role: "dialog",
+			"aria-modal": "true",
+			"aria-label": this.product.name
+		}, imageWrapper, details);
+		this.element = createElement("div", {
+			className: Modal_module_default.overlay,
+			role: "presentation"
+		}, content);
+		this.closeButton = closeButton;
+		this.updateTotalPrice();
+	}
+	createSizeBlock() {
+		const title = createElement("p", { className: Modal_module_default.sizeTitle }, "Size");
+		const options = createElement("div", { className: Modal_module_default.sizeOptions });
+		this.sizeOptions = [];
+		Object.entries(this.product.sizes).forEach(([key, size]) => {
+			const icon = createElement("div", { className: Modal_module_default.optionIcon }, key.toUpperCase());
+			const label = createElement("p", { className: Modal_module_default.optionLabel }, size.size);
+			const option = createElement("button", {
+				className: `${Modal_module_default.sizeOption} ${key === this.selectedSize ? Modal_module_default.optionActive : ""}`,
+				type: "button"
+			}, icon, label);
+			option.addEventListener("click", () => {
+				this.selectedSize = key;
+				this.updateSizeOptions();
+				this.updateTotalPrice();
+			});
+			this.sizeOptions.push(option);
+			options.append(option);
+		});
+		return createElement("div", { className: Modal_module_default.size }, title, options);
+	}
+	createAdditivesBlock() {
+		const title = createElement("p", { className: Modal_module_default.additivesTitle }, "Additives");
+		const options = createElement("div", { className: Modal_module_default.additiveOptions });
+		this.additiveOptions = [];
+		this.product.additives.forEach((additive, index) => {
+			const icon = createElement("div", { className: Modal_module_default.optionIcon }, String(index + 1));
+			const label = createElement("p", { className: Modal_module_default.optionLabel }, additive.name);
+			const option = createElement("button", {
+				className: `${Modal_module_default.additiveOption} ${this.selectedAdditives.includes(index) ? Modal_module_default.optionActive : ""}`,
+				type: "button"
+			}, icon, label);
+			option.addEventListener("click", () => {
+				this.toggleAdditive(index);
+				option.classList.toggle(Modal_module_default.optionActive, this.selectedAdditives.includes(index));
+				this.updateTotalPrice();
+			});
+			this.additiveOptions.push(option);
+			options.append(option);
+		});
+		return createElement("div", { className: Modal_module_default.additives }, title, options);
+	}
+	toggleAdditive(index) {
+		if (this.selectedAdditives.includes(index)) {
+			this.selectedAdditives = this.selectedAdditives.filter((item) => item !== index);
+			return;
+		}
+		this.selectedAdditives.push(index);
+	}
+	createNoticeIcon() {
+		const svg = createSvg("svg", {
+			class: Modal_module_default.noticeIcon,
+			width: "16",
+			height: "16",
+			viewBox: "0 0 16 16",
+			fill: "none",
+			"aria-hidden": "true"
+		});
+		const circle = createSvg("circle", {
+			cx: "8",
+			cy: "8",
+			r: "6.667",
+			stroke: "currentColor",
+			"stroke-linecap": "round",
+			"stroke-linejoin": "round"
+		});
+		const line = createSvg("path", {
+			d: "M8 7.667V11",
+			stroke: "currentColor",
+			"stroke-linecap": "round",
+			"stroke-linejoin": "round"
+		});
+		const dot = createSvg("path", {
+			d: "M8 5.007L8.007 5",
+			stroke: "currentColor",
+			"stroke-linecap": "round",
+			"stroke-linejoin": "round"
+		});
+		svg.append(circle, line, dot);
+		return svg;
+	}
+	updateSizeOptions() {
+		const sizeKeys = Object.keys(this.product.sizes);
+		this.sizeOptions.forEach((option, index) => {
+			option.classList.toggle(Modal_module_default.optionActive, sizeKeys[index] === this.selectedSize);
+		});
+	}
+	updateTotalPrice() {
+		const sizePrice = Number(this.product.sizes[this.selectedSize]["add-price"]);
+		const additivesPrice = this.selectedAdditives.reduce((total, index) => total + Number(this.product.additives[index]["add-price"]), 0);
+		const total = Number(this.product.price) + sizePrice + additivesPrice;
+		this.totalPrice.textContent = `$${total.toFixed(2)}`;
+	}
+	addListeners() {
+		this.closeButton.addEventListener("click", () => this.close());
+		this.element.addEventListener("click", (event) => {
+			if (event.target === this.element) this.close();
+		});
+		document.addEventListener("keydown", this.handleKeydown);
+	}
+	handleKeydown = (event) => {
+		if (event.key === "Escape") this.close();
+	};
+	close() {
+		document.removeEventListener("keydown", this.handleKeydown);
+		this.element.remove();
+		document.body.style.overflow = this.previousOverflow;
+	}
+};
 var CardCatalog_module_default = {
 	card: "_card_z6hb7_1",
 	imageWrapper: "_imageWrapper_z6hb7_11",
@@ -1716,20 +1999,25 @@ var CardCatalog = class {
 		const price = createElement("p", { className: CardCatalog_module_default.price }, `$${product.price}`);
 		const content = createElement("div", { className: CardCatalog_module_default.content }, text, price);
 		this.element = createElement("article", { className: CardCatalog_module_default.card }, imageWrapper, content);
+		this.element.addEventListener("click", () => {
+			const modal = new Modal(product);
+			document.body.append(modal.element);
+		});
 	}
 };
 var Catalog_module_default = {
-	section: "_section_1fy9o_1",
-	loadMore: "_loadMore_1fy9o_10",
-	title: "_title_1fy9o_43",
-	titleAccent: "_titleAccent_1fy9o_51",
-	tabs: "_tabs_1fy9o_61",
-	tab: "_tab_1fy9o_61",
-	iconWrapper: "_iconWrapper_1fy9o_83",
-	icon: "_icon_1fy9o_83",
-	label: "_label_1fy9o_99",
-	tabActive: "_tabActive_1fy9o_104",
-	products: "_products_1fy9o_128"
+	section: "_section_lmv0c_1",
+	loadMore: "_loadMore_lmv0c_10",
+	loading: "_loading_lmv0c_31",
+	title: "_title_lmv0c_45",
+	titleAccent: "_titleAccent_lmv0c_53",
+	tabs: "_tabs_lmv0c_63",
+	tab: "_tab_lmv0c_63",
+	iconWrapper: "_iconWrapper_lmv0c_85",
+	icon: "_icon_lmv0c_85",
+	label: "_label_lmv0c_101",
+	tabActive: "_tabActive_lmv0c_106",
+	products: "_products_lmv0c_130"
 };
 //#endregion
 //#region src/components/Catalog/Catalog.js
@@ -1753,19 +2041,31 @@ var CATEGORIES = [
 var Catalog = class {
 	constructor() {
 		this.activeCategory = "coffee";
+		this.isExpanded = false;
+		this.isMobile = window.innerWidth <= 768;
+		this.handleResize = this.handleResize.bind(this);
 		this.title = createElement("h1", { className: Catalog_module_default.title }, "Behind each of our cups ", "hides an ", createElement("span", { className: Catalog_module_default.titleAccent }, "amazing surprise"));
-		this.tabs = createElement("div", { className: Catalog_module_default.tabs }, ...CATEGORIES.map((category, index) => this.createTab(category, index)));
+		this.tabs = createElement("div", {
+			className: Catalog_module_default.tabs,
+			role: "tablist",
+			"aria-label": "Product categories"
+		}, ...CATEGORIES.map((category) => this.createTab(category)));
 		this.products = createElement("div", { className: Catalog_module_default.products });
+		this.loadMoreIcon = this.createLoadMoreIcon();
 		this.loadMoreButton = createElement("button", {
 			className: Catalog_module_default.loadMore,
 			type: "button",
 			"aria-label": "Load more products"
-		}, this.createLoadMoreIcon());
+		}, this.loadMoreIcon);
+		this.loadMoreButton.addEventListener("click", () => {
+			this.handleLoadMore();
+		});
+		window.addEventListener("resize", this.handleResize);
 		this.renderProducts();
 		this.element = createElement("section", { className: Catalog_module_default.section }, this.title, this.tabs, this.products, this.loadMoreButton);
 	}
-	createTab(category, index) {
-		const isActive = index === 0;
+	createTab(category) {
+		const isActive = category.value === this.activeCategory;
 		const icon = createElement("img", {
 			className: Catalog_module_default.icon,
 			src: category.icon,
@@ -1774,10 +2074,49 @@ var Catalog = class {
 		});
 		const iconWrapper = createElement("span", { className: Catalog_module_default.iconWrapper }, icon);
 		const label = createElement("span", { className: Catalog_module_default.label }, category.label);
-		return createElement("button", {
+		const button = createElement("button", {
 			className: `${Catalog_module_default.tab} ${isActive ? Catalog_module_default.tabActive : ""}`,
-			type: "button"
+			type: "button",
+			role: "tab",
+			"aria-selected": String(isActive)
 		}, iconWrapper, label);
+		button.addEventListener("click", () => this.selectCategory(category.value));
+		return button;
+	}
+	selectCategory(category) {
+		if (category === this.activeCategory) return;
+		this.activeCategory = category;
+		this.isExpanded = false;
+		[...this.tabs.children].forEach((tab, index) => {
+			const isActive = CATEGORIES[index].value === this.activeCategory;
+			tab.classList.toggle(Catalog_module_default.tabActive, isActive);
+			tab.setAttribute("aria-selected", String(isActive));
+		});
+		this.renderProducts();
+	}
+	getVisibleCount(totalProducts) {
+		if (this.isExpanded || window.innerWidth > 768) return totalProducts;
+		return Math.min(4, totalProducts);
+	}
+	handleResize() {
+		const isMobile = window.innerWidth <= 768;
+		if (isMobile === this.isMobile) return;
+		this.isMobile = isMobile;
+		this.isExpanded = false;
+		this.renderProducts();
+	}
+	handleLoadMore() {
+		this.loadMoreButton.disabled = true;
+		this.loadMoreButton.classList.add(Catalog_module_default.loading);
+		const handleTransitionEnd = (event) => {
+			if (event.target !== this.loadMoreIcon || event.propertyName !== "transform") return;
+			this.loadMoreButton.removeEventListener("transitionend", handleTransitionEnd);
+			this.loadMoreButton.classList.remove(Catalog_module_default.loading);
+			this.isExpanded = true;
+			this.renderProducts();
+			this.loadMoreButton.disabled = false;
+		};
+		this.loadMoreButton.addEventListener("transitionend", handleTransitionEnd);
 	}
 	createLoadMoreIcon() {
 		return createSvg("svg", {
@@ -1801,10 +2140,10 @@ var Catalog = class {
 	}
 	renderProducts() {
 		const products = PRODUCTS.filter((product) => product.category === this.activeCategory);
-		this.products.replaceChildren(...products.map((product) => new CardCatalog(product).element));
-	}
-	mount(container) {
-		container.replaceChildren(this.element);
+		const visibleCount = this.getVisibleCount(products.length);
+		this.products.replaceChildren(...products.slice(0, visibleCount).map((product) => new CardCatalog(product).element));
+		const hasMoreProducts = visibleCount < products.length;
+		this.loadMoreButton.style.display = hasMoreProducts ? "flex" : "none";
 	}
 };
 //#endregion
@@ -1882,4 +2221,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-5euo3pOs.js.map
+//# sourceMappingURL=main-B2JYXPow.js.map
