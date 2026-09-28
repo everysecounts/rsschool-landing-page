@@ -40,8 +40,6 @@ class Catalog {
       'div',
       {
         className: styles.tabs,
-        role: 'tablist',
-        'aria-label': 'Product categories',
       },
       ...CATEGORIES.map((category) => this.createTab(category)),
     );
@@ -99,8 +97,6 @@ class Catalog {
       {
         className: `${styles.tab} ${isActive ? styles.tabActive : ''}`,
         type: 'button',
-        role: 'tab',
-        'aria-selected': String(isActive),
       },
       iconWrapper,
       label,
@@ -122,7 +118,6 @@ class Catalog {
       const isActive = CATEGORIES[index].value === this.activeCategory;
 
       tab.classList.toggle(styles.tabActive, isActive);
-      tab.setAttribute('aria-selected', String(isActive));
     });
     this.renderProducts();
   }
