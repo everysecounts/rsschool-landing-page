@@ -2045,11 +2045,7 @@ var Catalog = class {
 		this.isMobile = window.innerWidth <= 768;
 		this.handleResize = this.handleResize.bind(this);
 		this.title = createElement("h1", { className: Catalog_module_default.title }, "Behind each of our cups ", "hides an ", createElement("span", { className: Catalog_module_default.titleAccent }, "amazing surprise"));
-		this.tabs = createElement("div", {
-			className: Catalog_module_default.tabs,
-			role: "tablist",
-			"aria-label": "Product categories"
-		}, ...CATEGORIES.map((category) => this.createTab(category)));
+		this.tabs = createElement("div", { className: Catalog_module_default.tabs }, ...CATEGORIES.map((category) => this.createTab(category)));
 		this.products = createElement("div", { className: Catalog_module_default.products });
 		this.loadMoreIcon = this.createLoadMoreIcon();
 		this.loadMoreButton = createElement("button", {
@@ -2076,9 +2072,7 @@ var Catalog = class {
 		const label = createElement("span", { className: Catalog_module_default.label }, category.label);
 		const button = createElement("button", {
 			className: `${Catalog_module_default.tab} ${isActive ? Catalog_module_default.tabActive : ""}`,
-			type: "button",
-			role: "tab",
-			"aria-selected": String(isActive)
+			type: "button"
 		}, iconWrapper, label);
 		button.addEventListener("click", () => this.selectCategory(category.value));
 		return button;
@@ -2090,7 +2084,6 @@ var Catalog = class {
 		[...this.tabs.children].forEach((tab, index) => {
 			const isActive = CATEGORIES[index].value === this.activeCategory;
 			tab.classList.toggle(Catalog_module_default.tabActive, isActive);
-			tab.setAttribute("aria-selected", String(isActive));
 		});
 		this.renderProducts();
 	}
@@ -2221,4 +2214,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-B2JYXPow.js.map
+//# sourceMappingURL=main-C4JrP7aw.js.map
