@@ -4,6 +4,7 @@ import styles from './Favorites.module.css';
 
 const SLIDE_DURATION = 5000;
 const TRANSITION_DURATION = 700;
+const DRAG_THRESHOLD_RATIO = 0.15;
 
 function arrowIcon(direction) {
   const path =
@@ -46,6 +47,7 @@ function createCard(product, isClone = false) {
     className: styles.image,
     src: product.image,
     alt: isClone ? '' : product.name,
+    draggable: 'false',
   });
 
   const name = createElement('h3', { className: styles.name }, product.name);
@@ -93,6 +95,13 @@ class Favorites {
     this.isAnimating = false;
     this.timer = null;
     this.fallbackTimer = null;
+    this.autoSlideRemaining = SLIDE_DURATION;
+    this.autoSlideStartedAt = 0;
+    this.isDragging = false;
+    this.activePointerId = null;
+    this.dragStartX = 0;
+    this.dragBasePercent = 0;
+    this.viewportWidth = 0;
 
     const title = createElement(
       'h2',
@@ -116,12 +125,15 @@ class Favorites {
       createCard(firstProduct, true),
     );
 
-    const viewport = createElement('div', { className: styles.viewport }, this.track);
+    this.viewport = createElement('div', { className: styles.viewport }, this.track);
+    this.viewport.style.userSelect = 'none';
+    this.viewport.style.touchAction = 'pan-y';
+
     const carousel = createElement(
       'div',
       { className: styles.carousel },
       this.previousButton,
-      viewport,
+      this.viewport,
       this.nextButton,
     );
 
@@ -150,6 +162,10 @@ class Favorites {
       }
     });
 
+    this.viewport.addEventListener('pointerdown', this.handlePointerDown);
+    this.viewport.addEventListener('pointermove', this.handlePointerMove);
+    this.viewport.addEventListener('pointerup', this.handlePointerUp);
+    this.viewport.addEventListener('pointercancel', this.handlePointerUp);
     registerSection('favorite-coffee', this.element);
     this.moveTrack(false);
     this.updateProgress();
@@ -213,16 +229,101 @@ class Favorites {
     });
   }
 
+  getActiveFill() {
+    const item = this.progressItems[this.currentIndex];
+    return item ? item.querySelector(`.${styles.progressFill}`) : null;
+  }
+
   startAutoSlide() {
+    this.autoSlideRemaining = SLIDE_DURATION;
+    this.autoSlideStartedAt = Date.now();
     this.timer = window.setTimeout(() => {
       this.showNext();
-    }, SLIDE_DURATION);
+    }, this.autoSlideRemaining);
   }
 
   restartAutoSlide() {
     window.clearTimeout(this.timer);
     this.startAutoSlide();
+
+    const fill = this.getActiveFill();
+    if (fill) {
+      fill.style.animation = 'none';
+      void fill.offsetHeight;
+      fill.style.animation = '';
+      fill.style.animationPlayState = '';
+    }
   }
+
+  pauseAutoSlide() {
+    window.clearTimeout(this.timer);
+
+    const elapsed = Date.now() - this.autoSlideStartedAt;
+    this.autoSlideRemaining = Math.max(0, this.autoSlideRemaining - elapsed);
+
+    const fill = this.getActiveFill();
+    if (fill) {
+      fill.style.animationPlayState = 'paused';
+    }
+  }
+
+  resumeAutoSlide() {
+    this.autoSlideStartedAt = Date.now();
+    this.timer = window.setTimeout(() => {
+      this.showNext();
+    }, this.autoSlideRemaining);
+
+    const fill = this.getActiveFill();
+    if (fill) {
+      fill.style.animationPlayState = 'running';
+    }
+  }
+
+  handlePointerDown = (event) => {
+    if (this.isAnimating || this.isDragging) return;
+    if (event.button !== undefined && event.button !== 0) return; // только левая кнопка мыши
+
+    this.isDragging = true;
+    this.activePointerId = event.pointerId;
+    this.dragStartX = event.clientX;
+    this.dragBasePercent = -100 * this.position;
+    this.viewportWidth = this.viewport.offsetWidth;
+    this.track.style.transition = 'none';
+    this.viewport.setPointerCapture(event.pointerId);
+
+    window.clearTimeout(this.fallbackTimer);
+    this.pauseAutoSlide();
+  };
+
+  handlePointerMove = (event) => {
+    if (!this.isDragging || event.pointerId !== this.activePointerId) return;
+    const deltaX = event.clientX - this.dragStartX;
+    const deltaPercent = (deltaX / this.viewportWidth) * 100;
+    this.track.style.transform = `translateX(${this.dragBasePercent + deltaPercent}%)`;
+  };
+
+  handlePointerUp = (event) => {
+    if (!this.isDragging || event.pointerId !== this.activePointerId) return;
+
+    this.isDragging = false;
+    if (this.viewport.hasPointerCapture?.(event.pointerId)) {
+      this.viewport.releasePointerCapture(event.pointerId);
+    }
+
+    const deltaX = event.clientX - this.dragStartX;
+    const threshold = this.viewportWidth * DRAG_THRESHOLD_RATIO;
+
+    this.track.style.transition = '';
+
+    if (deltaX <= -threshold) {
+      this.showNext();
+    } else if (deltaX >= threshold) {
+      this.showPrevious();
+    } else {
+      this.moveTrack(true);
+      this.resumeAutoSlide();
+    }
+  };
 }
 
 export { Favorites };
