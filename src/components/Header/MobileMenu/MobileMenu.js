@@ -12,6 +12,7 @@ class MobileMenu {
     this.menuLink = createMenuLink(styles.menu, styles.menuIcon, (event, link) => {
       if (this.menuLink.classList.contains(styles.menuActive)) {
         event.preventDefault();
+        onClose();
         return;
       }
       onClose();
