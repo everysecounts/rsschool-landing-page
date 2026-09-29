@@ -115,6 +115,7 @@
           border-color: var(--background-container);
           background-color: var(--background-modalcontrol);
           color: var(--text-inverse);
+          cursor: default;
 
           .optionIcon {
             background-color: var(--background-modal);
