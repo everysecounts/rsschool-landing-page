@@ -434,6 +434,7 @@ var MobileMenu = class {
 		this.menuLink = createMenuLink(MobileMenu_module_default.menu, MobileMenu_module_default.menuIcon, (event, link) => {
 			if (this.menuLink.classList.contains(MobileMenu_module_default.menuActive)) {
 				event.preventDefault();
+				onClose();
 				return;
 			}
 			onClose();
@@ -1792,31 +1793,31 @@ var Home = class {
 	}
 };
 var Modal_module_default = {
-	overlay: "_overlay_hhu1c_1",
-	content: "_content_hhu1c_11",
-	imageWrapper: "_imageWrapper_hhu1c_20",
-	details: "_details_hhu1c_37",
-	titleGroup: "_titleGroup_hhu1c_43",
-	title: "_title_hhu1c_43",
-	description: "_description_hhu1c_52",
-	size: "_size_hhu1c_57",
-	additives: "_additives_hhu1c_58",
-	sizeTitle: "_sizeTitle_hhu1c_63",
-	additivesTitle: "_additivesTitle_hhu1c_64",
-	sizeOptions: "_sizeOptions_hhu1c_68",
-	additiveOptions: "_additiveOptions_hhu1c_69",
-	sizeOption: "_sizeOption_hhu1c_68",
-	additiveOption: "_additiveOption_hhu1c_69",
-	optionIcon: "_optionIcon_hhu1c_94",
-	optionLabel: "_optionLabel_hhu1c_108",
-	optionActive: "_optionActive_hhu1c_114",
-	total: "_total_hhu1c_140",
-	totalLabel: "_totalLabel_hhu1c_144",
-	totalPrice: "_totalPrice_hhu1c_145",
-	notice: "_notice_hhu1c_152",
-	noticeIcon: "_noticeIcon_hhu1c_158",
-	noticeText: "_noticeText_hhu1c_163",
-	closeButton: "_closeButton_hhu1c_170"
+	overlay: "_overlay_1diux_1",
+	content: "_content_1diux_11",
+	imageWrapper: "_imageWrapper_1diux_20",
+	details: "_details_1diux_37",
+	titleGroup: "_titleGroup_1diux_43",
+	title: "_title_1diux_43",
+	description: "_description_1diux_52",
+	size: "_size_1diux_57",
+	additives: "_additives_1diux_58",
+	sizeTitle: "_sizeTitle_1diux_63",
+	additivesTitle: "_additivesTitle_1diux_64",
+	sizeOptions: "_sizeOptions_1diux_68",
+	additiveOptions: "_additiveOptions_1diux_69",
+	sizeOption: "_sizeOption_1diux_68",
+	additiveOption: "_additiveOption_1diux_69",
+	optionIcon: "_optionIcon_1diux_94",
+	optionLabel: "_optionLabel_1diux_108",
+	optionActive: "_optionActive_1diux_114",
+	total: "_total_1diux_141",
+	totalLabel: "_totalLabel_1diux_145",
+	totalPrice: "_totalPrice_1diux_146",
+	notice: "_notice_1diux_153",
+	noticeIcon: "_noticeIcon_1diux_159",
+	noticeText: "_noticeText_1diux_164",
+	closeButton: "_closeButton_1diux_171"
 };
 //#endregion
 //#region src/components/Modal/Modal.js
@@ -2214,4 +2215,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-C4JrP7aw.js.map
+//# sourceMappingURL=main-CzyT2EtK.js.map
