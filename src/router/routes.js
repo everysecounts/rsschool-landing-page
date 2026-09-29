@@ -3,9 +3,18 @@ import { Menu } from '@/pages/Menu';
 import { NotFound } from '@/pages/NotFound';
 
 const routes = {
-  '/': Home,
-  '/menu': Menu,
-  '*': NotFound,
+  '/': {
+    Page: Home,
+    title: 'Coffee House',
+  },
+  '/menu': {
+    Page: Menu,
+    title: 'Coffee House | Menu',
+  },
+  '*': {
+    Page: NotFound,
+    title: 'Coffee House | 404',
+  },
 };
 
 export { routes };
