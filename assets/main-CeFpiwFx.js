@@ -710,7 +710,10 @@ var Router = class {
 	render() {
 		clearSections();
 		const path = this.getPath();
-		new (this.routes[path] || this.routes["*"])(this.handleLinkClick.bind(this)).mount(this.container);
+		const route = this.routes[path] || this.routes["*"];
+		document.title = route.title;
+		const Page = route.Page;
+		new Page(this.handleLinkClick.bind(this)).mount(this.container);
 		this.onNavigate?.(path);
 		this.scrollToHash();
 	}
@@ -2178,9 +2181,18 @@ var NotFound = class {
 //#endregion
 //#region src/router/routes.js
 var routes = {
-	"/": Home,
-	"/menu": Menu,
-	"*": NotFound
+	"/": {
+		Page: Home,
+		title: "Coffee House"
+	},
+	"/menu": {
+		Page: Menu,
+		title: "Coffee House | Menu"
+	},
+	"*": {
+		Page: NotFound,
+		title: "Coffee House | 404"
+	}
 };
 //#endregion
 //#region src/App.js
@@ -2215,4 +2227,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-CzyT2EtK.js.map
+//# sourceMappingURL=main-CeFpiwFx.js.map
