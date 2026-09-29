@@ -1518,6 +1518,7 @@ var Favorites_module_default = {
 //#endregion
 //#region src/components/Favorites/Favorites.js
 var SLIDE_DURATION = 5e3;
+var DRAG_THRESHOLD_RATIO = .15;
 function arrowIcon(direction) {
 	return createSvg("svg", {
 		width: 24,
@@ -1545,7 +1546,8 @@ function createCard(product, isClone = false) {
 	const image = createElement("img", {
 		className: Favorites_module_default.image,
 		src: product.image,
-		alt: isClone ? "" : product.name
+		alt: isClone ? "" : product.name,
+		draggable: "false"
 	});
 	const name = createElement("h3", { className: Favorites_module_default.name }, product.name);
 	const description = createElement("p", { className: Favorites_module_default.description }, product.description);
@@ -1568,14 +1570,23 @@ var Favorites = class {
 		this.isAnimating = false;
 		this.timer = null;
 		this.fallbackTimer = null;
+		this.autoSlideRemaining = SLIDE_DURATION;
+		this.autoSlideStartedAt = 0;
+		this.isDragging = false;
+		this.activePointerId = null;
+		this.dragStartX = 0;
+		this.dragBasePercent = 0;
+		this.viewportWidth = 0;
 		const title = createElement("h2", { className: Favorites_module_default.title }, "Choose your ", createElement("span", { className: Favorites_module_default.titleAccent }, "favorite"), " coffee");
 		this.previousButton = createArrowButton("left", "Previous coffee", Favorites_module_default.arrowPrevious);
 		this.nextButton = createArrowButton("right", "Next coffee", Favorites_module_default.arrowNext);
 		const firstProduct = FAVORITE_PRODUCTS[0];
 		const lastProduct = FAVORITE_PRODUCTS[this.count - 1];
 		this.track = createElement("div", { className: Favorites_module_default.track }, createCard(lastProduct, true), ...FAVORITE_PRODUCTS.map((product) => createCard(product)), createCard(firstProduct, true));
-		const viewport = createElement("div", { className: Favorites_module_default.viewport }, this.track);
-		const carousel = createElement("div", { className: Favorites_module_default.carousel }, this.previousButton, viewport, this.nextButton);
+		this.viewport = createElement("div", { className: Favorites_module_default.viewport }, this.track);
+		this.viewport.style.userSelect = "none";
+		this.viewport.style.touchAction = "pan-y";
+		const carousel = createElement("div", { className: Favorites_module_default.carousel }, this.previousButton, this.viewport, this.nextButton);
 		this.progress = createProgress();
 		this.progressItems = [...this.progress.children];
 		this.element = createElement("section", {
@@ -1592,6 +1603,10 @@ var Favorites = class {
 		this.track.addEventListener("transitionend", (event) => {
 			if (event.target === this.track) this.handleTransitionEnd();
 		});
+		this.viewport.addEventListener("pointerdown", this.handlePointerDown);
+		this.viewport.addEventListener("pointermove", this.handlePointerMove);
+		this.viewport.addEventListener("pointerup", this.handlePointerUp);
+		this.viewport.addEventListener("pointercancel", this.handlePointerUp);
 		registerSection("favorite-coffee", this.element);
 		this.moveTrack(false);
 		this.updateProgress();
@@ -1646,15 +1661,75 @@ var Favorites = class {
 			if (index === this.currentIndex) item.classList.add(Favorites_module_default.progressItemActive);
 		});
 	}
+	getActiveFill() {
+		const item = this.progressItems[this.currentIndex];
+		return item ? item.querySelector(`.${Favorites_module_default.progressFill}`) : null;
+	}
 	startAutoSlide() {
+		this.autoSlideRemaining = SLIDE_DURATION;
+		this.autoSlideStartedAt = Date.now();
 		this.timer = window.setTimeout(() => {
 			this.showNext();
-		}, SLIDE_DURATION);
+		}, this.autoSlideRemaining);
 	}
 	restartAutoSlide() {
 		window.clearTimeout(this.timer);
 		this.startAutoSlide();
+		const fill = this.getActiveFill();
+		if (fill) {
+			fill.style.animation = "none";
+			fill.offsetHeight;
+			fill.style.animation = "";
+			fill.style.animationPlayState = "";
+		}
 	}
+	pauseAutoSlide() {
+		window.clearTimeout(this.timer);
+		const elapsed = Date.now() - this.autoSlideStartedAt;
+		this.autoSlideRemaining = Math.max(0, this.autoSlideRemaining - elapsed);
+		const fill = this.getActiveFill();
+		if (fill) fill.style.animationPlayState = "paused";
+	}
+	resumeAutoSlide() {
+		this.autoSlideStartedAt = Date.now();
+		this.timer = window.setTimeout(() => {
+			this.showNext();
+		}, this.autoSlideRemaining);
+		const fill = this.getActiveFill();
+		if (fill) fill.style.animationPlayState = "running";
+	}
+	handlePointerDown = (event) => {
+		if (this.isAnimating || this.isDragging) return;
+		if (event.button !== void 0 && event.button !== 0) return;
+		this.isDragging = true;
+		this.activePointerId = event.pointerId;
+		this.dragStartX = event.clientX;
+		this.dragBasePercent = -100 * this.position;
+		this.viewportWidth = this.viewport.offsetWidth;
+		this.track.style.transition = "none";
+		this.viewport.setPointerCapture(event.pointerId);
+		window.clearTimeout(this.fallbackTimer);
+		this.pauseAutoSlide();
+	};
+	handlePointerMove = (event) => {
+		if (!this.isDragging || event.pointerId !== this.activePointerId) return;
+		const deltaPercent = (event.clientX - this.dragStartX) / this.viewportWidth * 100;
+		this.track.style.transform = `translateX(${this.dragBasePercent + deltaPercent}%)`;
+	};
+	handlePointerUp = (event) => {
+		if (!this.isDragging || event.pointerId !== this.activePointerId) return;
+		this.isDragging = false;
+		if (this.viewport.hasPointerCapture?.(event.pointerId)) this.viewport.releasePointerCapture(event.pointerId);
+		const deltaX = event.clientX - this.dragStartX;
+		const threshold = this.viewportWidth * DRAG_THRESHOLD_RATIO;
+		this.track.style.transition = "";
+		if (deltaX <= -threshold) this.showNext();
+		else if (deltaX >= threshold) this.showPrevious();
+		else {
+			this.moveTrack(true);
+			this.resumeAutoSlide();
+		}
+	};
 };
 var About_module_default = {
 	section: "_section_35wyt_1",
@@ -2227,4 +2302,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-CeFpiwFx.js.map
+//# sourceMappingURL=main-Dbvn_pzz.js.map
