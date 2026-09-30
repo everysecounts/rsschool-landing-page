@@ -399,11 +399,13 @@ function navHref({ hash, homeOnly }) {
 }
 var Navigation = class {
 	constructor(onLinkClick) {
+		this.links = [];
 		const navItems = NAV_ITEMS.map((item) => {
 			const link = createElement("a", {
 				className: Navigation_module_default.navLink,
 				href: navHref(item)
 			}, item.label);
+			this.links.push(link);
 			if (onLinkClick) link.addEventListener("click", (event) => {
 				onLinkClick(event, link);
 			});
@@ -425,6 +427,15 @@ var MobileMenu_module_default = {
 };
 //#endregion
 //#region src/components/Header/MobileMenu/MobileMenu.js
+var SCROLL_KEYS = [
+	"ArrowUp",
+	"ArrowDown",
+	"PageUp",
+	"PageDown",
+	"Home",
+	"End",
+	" "
+];
 var MobileMenu = class {
 	constructor(onClose, onLinkClick) {
 		this.navigation = new Navigation((event, link) => {
@@ -441,13 +452,25 @@ var MobileMenu = class {
 			onLinkClick?.(event, link);
 		});
 		this.element = createElement("div", { className: MobileMenu_module_default.mobileMenu }, this.navigation.element, this.menuLink);
+		this.isOpen = false;
+		this.returnFocusElement = null;
+		this.handleKeyDown = this.handleKeyDown.bind(this);
+	}
+	getFocusableElements() {
+		return [...this.navigation.links, this.menuLink];
 	}
 	open() {
+		if (this.isOpen) return;
+		this.isOpen = true;
+		this.returnFocusElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 		this.element.classList.add(MobileMenu_module_default.open);
 		document.body.style.overflow = "hidden";
+		document.addEventListener("keydown", this.handleKeyDown);
+		const firstElement = this.getFocusableElements()[0];
+		if (firstElement) firstElement.focus({ preventScroll: true });
 	}
 	close(onClosed) {
-		if (!this.element.classList.contains(MobileMenu_module_default.open)) {
+		if (!this.isOpen) {
 			onClosed?.();
 			return;
 		}
@@ -455,13 +478,47 @@ var MobileMenu = class {
 			if (event.target === this.element && event.propertyName === "transform") onClosed?.();
 		};
 		this.element.addEventListener("transitionend", handleTransitionEnd, { once: true });
+		this.isOpen = false;
 		this.element.classList.remove(MobileMenu_module_default.open);
 		document.body.style.overflow = "";
+		document.removeEventListener("keydown", this.handleKeyDown);
+		if (this.returnFocusElement instanceof HTMLElement) {
+			this.returnFocusElement.focus({ preventScroll: true });
+			this.returnFocusElement = null;
+		}
 	}
 	toggle() {
-		const isOpen = this.element.classList.contains(MobileMenu_module_default.open);
-		isOpen ? this.close() : this.open();
-		return !isOpen;
+		if (this.isOpen) {
+			this.close();
+			return false;
+		}
+		this.open();
+		return true;
+	}
+	handleKeyDown(event) {
+		if (!this.isOpen) return;
+		if (event.key === "Tab") {
+			const focusableElements = this.getFocusableElements();
+			if (!focusableElements.length) return;
+			const firstElement = focusableElements[0];
+			const lastElement = focusableElements[focusableElements.length - 1];
+			if (event.shiftKey && document.activeElement === firstElement) {
+				event.preventDefault();
+				lastElement.focus();
+				return;
+			}
+			if (!event.shiftKey && document.activeElement === lastElement) {
+				event.preventDefault();
+				firstElement.focus();
+			}
+			return;
+		}
+		if (event.key === "Escape") {
+			event.preventDefault();
+			this.close();
+			return;
+		}
+		if (SCROLL_KEYS.includes(event.key)) event.preventDefault();
 	}
 	setActivePath(path) {
 		const isMenuPage = path === "/menu";
@@ -496,9 +553,7 @@ var Header = class {
 		this.element = createElement("header", { className: Header_module_default.header }, this.logo.element, this.navigation.element, this.controls.element, this.mobileMenu.element);
 		this.mobileMediaQuery = window.matchMedia("(max-width: 768px)");
 		this.handleMediaChange = this.handleMediaChange.bind(this);
-		this.handleKeyDown = this.handleKeyDown.bind(this);
 		this.mobileMediaQuery.addEventListener("change", this.handleMediaChange);
-		document.addEventListener("keydown", this.handleKeyDown);
 	}
 	toggleMobileMenu() {
 		const isOpen = this.mobileMenu.toggle();
@@ -511,16 +566,12 @@ var Header = class {
 	handleMediaChange(event) {
 		if (!event.matches) this.closeMobileMenu();
 	}
-	handleKeyDown(event) {
-		if (event.key === "Escape") this.closeMobileMenu();
-	}
 	setActivePath(path) {
 		this.controls.setActivePath(path);
 		this.mobileMenu.setActivePath(path);
 	}
 	destroy() {
 		this.mobileMediaQuery.removeEventListener("change", this.handleMediaChange);
-		document.removeEventListener("keydown", this.handleKeyDown);
 	}
 };
 var Main_module_default = { main: "_main_hyu87_1" };
@@ -2350,4 +2401,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-CKABEmn1.js.map
+//# sourceMappingURL=main-C-KlKV7B.js.map
