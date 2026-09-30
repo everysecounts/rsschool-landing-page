@@ -3,6 +3,8 @@ import { Navigation } from '../Navigation';
 import { createMenuLink } from '../MenuLink';
 import styles from './MobileMenu.module.css';
 
+const SCROLL_KEYS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+
 class MobileMenu {
   constructor(onClose, onLinkClick) {
     this.navigation = new Navigation((event, link) => {
@@ -27,17 +29,34 @@ class MobileMenu {
       this.navigation.element,
       this.menuLink,
     );
+    this.isOpen = false;
+    this.returnFocusElement = null;
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  getFocusableElements() {
+    return [...this.navigation.links, this.menuLink];
   }
 
   open() {
+    if (this.isOpen) return;
+    this.isOpen = true;
+    this.returnFocusElement =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
     this.element.classList.add(styles.open);
     document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', this.handleKeyDown);
+
+    const firstElement = this.getFocusableElements()[0];
+
+    if (firstElement) {
+      firstElement.focus({ preventScroll: true });
+    }
   }
 
   close(onClosed) {
-    const isOpen = this.element.classList.contains(styles.open);
-
-    if (!isOpen) {
+    if (!this.isOpen) {
       onClosed?.();
       return;
     }
@@ -51,15 +70,60 @@ class MobileMenu {
     this.element.addEventListener('transitionend', handleTransitionEnd, {
       once: true,
     });
-
+    this.isOpen = false;
     this.element.classList.remove(styles.open);
     document.body.style.overflow = '';
+    document.removeEventListener('keydown', this.handleKeyDown);
+    if (this.returnFocusElement instanceof HTMLElement) {
+      this.returnFocusElement.focus({ preventScroll: true });
+      this.returnFocusElement = null;
+    }
   }
 
   toggle() {
-    const isOpen = this.element.classList.contains(styles.open);
-    isOpen ? this.close() : this.open();
-    return !isOpen;
+    if (this.isOpen) {
+      this.close();
+      return false;
+    }
+
+    this.open();
+    return true;
+  }
+
+  handleKeyDown(event) {
+    if (!this.isOpen) return;
+
+    if (event.key === 'Tab') {
+      const focusableElements = this.getFocusableElements();
+
+      if (!focusableElements.length) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+        return;
+      }
+
+      if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.close();
+      return;
+    }
+
+    if (SCROLL_KEYS.includes(event.key)) {
+      event.preventDefault();
+    }
   }
 
   setActivePath(path) {

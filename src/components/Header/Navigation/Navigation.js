@@ -29,6 +29,7 @@ function navHref({ hash, homeOnly }) {
 
 class Navigation {
   constructor(onLinkClick) {
+    this.links = [];
     const navItems = NAV_ITEMS.map((item) => {
       const link = createElement(
         'a',
@@ -38,7 +39,7 @@ class Navigation {
         },
         item.label,
       );
-
+      this.links.push(link);
       if (onLinkClick) {
         link.addEventListener('click', (event) => {
           onLinkClick(event, link);
