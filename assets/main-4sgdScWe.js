@@ -494,9 +494,11 @@ var Header = class {
 			this.toggleMobileMenu();
 		}, onLinkClick);
 		this.element = createElement("header", { className: Header_module_default.header }, this.logo.element, this.navigation.element, this.controls.element, this.mobileMenu.element);
-		document.addEventListener("keydown", (event) => {
-			if (event.key === "Escape") this.closeMobileMenu();
-		});
+		this.mobileMediaQuery = window.matchMedia("(max-width: 768px)");
+		this.handleMediaChange = this.handleMediaChange.bind(this);
+		this.handleKeyDown = this.handleKeyDown.bind(this);
+		this.mobileMediaQuery.addEventListener("change", this.handleMediaChange);
+		document.addEventListener("keydown", this.handleKeyDown);
 	}
 	toggleMobileMenu() {
 		const isOpen = this.mobileMenu.toggle();
@@ -506,9 +508,19 @@ var Header = class {
 		this.mobileMenu.close();
 		this.controls.setBurgerState(false);
 	}
+	handleMediaChange(event) {
+		if (!event.matches) this.closeMobileMenu();
+	}
+	handleKeyDown(event) {
+		if (event.key === "Escape") this.closeMobileMenu();
+	}
 	setActivePath(path) {
 		this.controls.setActivePath(path);
 		this.mobileMenu.setActivePath(path);
+	}
+	destroy() {
+		this.mobileMediaQuery.removeEventListener("change", this.handleMediaChange);
+		document.removeEventListener("keydown", this.handleKeyDown);
 	}
 };
 var Main_module_default = { main: "_main_hyu87_1" };
@@ -2121,8 +2133,9 @@ var Catalog = class {
 	constructor() {
 		this.activeCategory = "coffee";
 		this.isExpanded = false;
-		this.isMobile = window.innerWidth <= 768;
-		this.handleResize = this.handleResize.bind(this);
+		this.mobileMediaQuery = window.matchMedia("(max-width: 768px)");
+		this.isMobile = this.mobileMediaQuery.matches;
+		this.handleMediaChange = this.handleMediaChange.bind(this);
 		this.title = createElement("h1", { className: Catalog_module_default.title }, "Behind each of our cups ", "hides an ", createElement("span", { className: Catalog_module_default.titleAccent }, "amazing surprise"));
 		this.tabs = createElement("div", { className: Catalog_module_default.tabs }, ...CATEGORIES.map((category) => this.createTab(category)));
 		this.products = createElement("div", { className: Catalog_module_default.products });
@@ -2135,7 +2148,7 @@ var Catalog = class {
 		this.loadMoreButton.addEventListener("click", () => {
 			this.handleLoadMore();
 		});
-		window.addEventListener("resize", this.handleResize);
+		this.mobileMediaQuery.addEventListener("change", this.handleMediaChange);
 		this.renderProducts();
 		this.element = createElement("section", { className: Catalog_module_default.section }, this.title, this.tabs, this.products, this.loadMoreButton);
 	}
@@ -2167,13 +2180,11 @@ var Catalog = class {
 		this.renderProducts();
 	}
 	getVisibleCount(totalProducts) {
-		if (this.isExpanded || window.innerWidth > 768) return totalProducts;
+		if (this.isExpanded || !this.isMobile) return totalProducts;
 		return Math.min(4, totalProducts);
 	}
-	handleResize() {
-		const isMobile = window.innerWidth <= 768;
-		if (isMobile === this.isMobile) return;
-		this.isMobile = isMobile;
+	handleMediaChange(event) {
+		this.isMobile = event.matches;
 		this.isExpanded = false;
 		this.renderProducts();
 	}
@@ -2216,6 +2227,9 @@ var Catalog = class {
 		this.products.replaceChildren(...products.slice(0, visibleCount).map((product) => new CardCatalog(product).element));
 		const hasMoreProducts = visibleCount < products.length;
 		this.loadMoreButton.style.display = hasMoreProducts ? "flex" : "none";
+	}
+	destroy() {
+		this.mobileMediaQuery.removeEventListener("change", this.handleMediaChange);
 	}
 };
 //#endregion
@@ -2302,4 +2316,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-CHOGLFdu.js.map
+//# sourceMappingURL=main-4sgdScWe.js.map
