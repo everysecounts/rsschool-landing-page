@@ -25,8 +25,9 @@ class Catalog {
   constructor() {
     this.activeCategory = 'coffee';
     this.isExpanded = false;
-    this.isMobile = window.innerWidth <= 768;
-    this.handleResize = this.handleResize.bind(this);
+    this.mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+    this.isMobile = this.mobileMediaQuery.matches;
+    this.handleMediaChange = this.handleMediaChange.bind(this);
 
     this.title = createElement(
       'h1',
@@ -64,8 +65,7 @@ class Catalog {
       this.handleLoadMore();
     });
 
-    window.addEventListener('resize', this.handleResize);
-
+    this.mobileMediaQuery.addEventListener('change', this.handleMediaChange);
     this.renderProducts();
 
     this.element = createElement(
@@ -123,18 +123,14 @@ class Catalog {
   }
 
   getVisibleCount(totalProducts) {
-    if (this.isExpanded || window.innerWidth > 768) {
+    if (this.isExpanded || !this.isMobile) {
       return totalProducts;
     }
     return Math.min(4, totalProducts);
   }
 
-  handleResize() {
-    const isMobile = window.innerWidth <= 768;
-    if (isMobile === this.isMobile) {
-      return;
-    }
-    this.isMobile = isMobile;
+  handleMediaChange(event) {
+    this.isMobile = event.matches;
     this.isExpanded = false;
     this.renderProducts();
   }
@@ -190,6 +186,10 @@ class Catalog {
     );
     const hasMoreProducts = visibleCount < products.length;
     this.loadMoreButton.style.display = hasMoreProducts ? 'flex' : 'none';
+  }
+
+  destroy() {
+    this.mobileMediaQuery.removeEventListener('change', this.handleMediaChange);
   }
 }
 

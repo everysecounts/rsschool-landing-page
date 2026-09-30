@@ -33,11 +33,11 @@ class Header {
       this.mobileMenu.element,
     );
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        this.closeMobileMenu();
-      }
-    });
+    this.mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+    this.handleMediaChange = this.handleMediaChange.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.mobileMediaQuery.addEventListener('change', this.handleMediaChange);
+    document.addEventListener('keydown', this.handleKeyDown);
   }
 
   toggleMobileMenu() {
@@ -50,9 +50,26 @@ class Header {
     this.controls.setBurgerState(false);
   }
 
+  handleMediaChange(event) {
+    if (!event.matches) {
+      this.closeMobileMenu();
+    }
+  }
+
+  handleKeyDown(event) {
+    if (event.key === 'Escape') {
+      this.closeMobileMenu();
+    }
+  }
+
   setActivePath(path) {
     this.controls.setActivePath(path);
     this.mobileMenu.setActivePath(path);
+  }
+
+  destroy() {
+    this.mobileMediaQuery.removeEventListener('change', this.handleMediaChange);
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
 }
 
