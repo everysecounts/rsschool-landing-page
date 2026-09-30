@@ -73,7 +73,7 @@
     }
   }
 }
-._controls_19ay7_1 {
+._controls_1m2j0_1 {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -89,13 +89,14 @@
     gap: 12px;
   }
 
-  ._menu_19ay7_17 {
+  ._menu_1m2j0_17 {
     position: relative;
     bottom: 2px;
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 28px;
+    font-size: 16px;
+    line-height: 150%;
     color: var(--text-primary);
     font-weight: 600;
     text-decoration: none;
@@ -105,12 +106,12 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-      &:not(._menuActive_19ay7_33):hover::after {
+      &:not(._menuActive_1m2j0_34):hover::after {
         transform: scaleX(1);
       }
     }
 
-    ._menuIcon_19ay7_38 {
+    ._menuIcon_1m2j0_39 {
       position: relative;
       bottom: 2px;
     }
@@ -118,8 +119,7 @@
     &::after {
       content: '';
       position: absolute;
-      right: 0;
-      bottom: -4px;
+      bottom: var(--underline-offset);
       left: 0;
       width: 100%;
       height: 2px;
@@ -129,7 +129,7 @@
       transition: transform 0.3s ease;
     }
 
-    &._menuActive_19ay7_33 {
+    &._menuActive_1m2j0_34 {
       cursor: default;
 
       &::after {
@@ -139,7 +139,7 @@
   }
 }
 
-._burger_19ay7_67 {
+._burger_1m2j0_67 {
   display: none;
   position: relative;
   width: 44px;
@@ -181,7 +181,7 @@
     }
   }
 
-  &._burgerOpen_19ay7_109 {
+  &._burgerOpen_1m2j0_109 {
     span:first-child {
       transform: translate(-50%, 0) rotate(45deg);
     }
@@ -208,12 +208,12 @@
     display: block;
   }
 }
-._nav_v7c21_1 {
+._nav_1kymj_1 {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  ._navList_v7c21_6 {
+  ._navList_1kymj_6 {
     display: flex;
     gap: 40px;
 
@@ -235,7 +235,7 @@
       gap: clamp(45px, calc(45px + (100vh - 600px) * 5 / 50), 50px);
     }
 
-    ._navItem_v7c21_28 {
+    ._navItem_1kymj_28 {
       list-style-type: none;
       height: 28px;
 
@@ -243,7 +243,7 @@
         height: 40px;
       }
 
-      ._navLink_v7c21_36 {
+      ._navLink_1kymj_36 {
         text-decoration: none;
         color: var(--text-primary);
         font-weight: 600;
@@ -261,7 +261,7 @@
           content: '';
           position: absolute;
           left: 0;
-          bottom: -4px;
+          bottom: var(--underline-offset);
           width: 100%;
           height: 2px;
           background-color: var(--text-primary);
@@ -1553,6 +1553,7 @@
   --switch-hover-bg: #665f55;
   --switch-icon-on: #e1d4c9;
   --switch-icon-off: #403f3d;
+  --underline-offset: -4px;
 }
 
 [data-theme='dark'] {

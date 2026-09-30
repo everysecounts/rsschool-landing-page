@@ -205,12 +205,12 @@ var ThemeSwitcher = class {
 	}
 };
 var Controls_module_default = {
-	controls: "_controls_19ay7_1",
-	menu: "_menu_19ay7_17",
-	menuActive: "_menuActive_19ay7_33",
-	menuIcon: "_menuIcon_19ay7_38",
-	burger: "_burger_19ay7_67",
-	burgerOpen: "_burgerOpen_19ay7_109"
+	controls: "_controls_1m2j0_1",
+	menu: "_menu_1m2j0_17",
+	menuActive: "_menuActive_1m2j0_34",
+	menuIcon: "_menuIcon_1m2j0_39",
+	burger: "_burger_1m2j0_67",
+	burgerOpen: "_burgerOpen_1m2j0_109"
 };
 //#endregion
 //#region src/components/Header/Controls/Controls.js
@@ -366,10 +366,10 @@ var Logo = class {
 	}
 };
 var Navigation_module_default = {
-	nav: "_nav_v7c21_1",
-	navList: "_navList_v7c21_6",
-	navItem: "_navItem_v7c21_28",
-	navLink: "_navLink_v7c21_36"
+	nav: "_nav_1kymj_1",
+	navList: "_navList_1kymj_6",
+	navItem: "_navItem_1kymj_28",
+	navLink: "_navLink_1kymj_36"
 };
 //#endregion
 //#region src/components/Header/Navigation/Navigation.js
@@ -1531,6 +1531,7 @@ var Favorites_module_default = {
 //#region src/components/Favorites/Favorites.js
 var SLIDE_DURATION = 5e3;
 var DRAG_THRESHOLD_RATIO = .15;
+var DIRECTION_THRESHOLD = 5;
 function arrowIcon(direction) {
 	return createSvg("svg", {
 		width: 24,
@@ -1569,10 +1570,22 @@ function createCard(product, isClone = false) {
 	return card;
 }
 function createProgress() {
-	return createElement("div", {
-		className: Favorites_module_default.progress,
-		"aria-hidden": "true"
-	}, ...FAVORITE_PRODUCTS.map(() => createElement("span", { className: Favorites_module_default.progressItem }, createElement("span", { className: Favorites_module_default.progressFill }))));
+	const items = [];
+	const fills = [];
+	return {
+		element: createElement("div", {
+			className: Favorites_module_default.progress,
+			"aria-hidden": "true"
+		}, ...FAVORITE_PRODUCTS.map(() => {
+			const fill = createElement("span", { className: Favorites_module_default.progressFill });
+			const item = createElement("span", { className: Favorites_module_default.progressItem }, fill);
+			items.push(item);
+			fills.push(fill);
+			return item;
+		})),
+		items,
+		fills
+	};
 }
 var Favorites = class {
 	constructor() {
@@ -1587,8 +1600,10 @@ var Favorites = class {
 		this.isDragging = false;
 		this.activePointerId = null;
 		this.dragStartX = 0;
+		this.dragStartY = 0;
 		this.dragBasePercent = 0;
 		this.viewportWidth = 0;
+		this.dragDirection = null;
 		const title = createElement("h2", { className: Favorites_module_default.title }, "Choose your ", createElement("span", { className: Favorites_module_default.titleAccent }, "favorite"), " coffee");
 		this.previousButton = createArrowButton("left", "Previous coffee", Favorites_module_default.arrowPrevious);
 		this.nextButton = createArrowButton("right", "Next coffee", Favorites_module_default.arrowNext);
@@ -1599,8 +1614,10 @@ var Favorites = class {
 		this.viewport.style.userSelect = "none";
 		this.viewport.style.touchAction = "pan-y";
 		const carousel = createElement("div", { className: Favorites_module_default.carousel }, this.previousButton, this.viewport, this.nextButton);
-		this.progress = createProgress();
-		this.progressItems = [...this.progress.children];
+		const progressData = createProgress();
+		this.progress = progressData.element;
+		this.progressItems = progressData.items;
+		this.progressFills = progressData.fills;
 		this.element = createElement("section", {
 			className: Favorites_module_default.section,
 			id: "favorite-coffee"
@@ -1674,8 +1691,7 @@ var Favorites = class {
 		});
 	}
 	getActiveFill() {
-		const item = this.progressItems[this.currentIndex];
-		return item ? item.querySelector(`.${Favorites_module_default.progressFill}`) : null;
+		return this.progressFills[this.currentIndex] ?? null;
 	}
 	startAutoSlide() {
 		this.autoSlideRemaining = SLIDE_DURATION;
@@ -1713,26 +1729,43 @@ var Favorites = class {
 	handlePointerDown = (event) => {
 		if (this.isAnimating || this.isDragging) return;
 		if (event.button !== void 0 && event.button !== 0) return;
-		this.isDragging = true;
 		this.activePointerId = event.pointerId;
 		this.dragStartX = event.clientX;
+		this.dragStartY = event.clientY;
 		this.dragBasePercent = -100 * this.position;
 		this.viewportWidth = this.viewport.offsetWidth;
-		this.track.style.transition = "none";
-		this.viewport.setPointerCapture(event.pointerId);
-		window.clearTimeout(this.fallbackTimer);
+		this.dragDirection = null;
 		this.pauseAutoSlide();
 	};
 	handlePointerMove = (event) => {
-		if (!this.isDragging || event.pointerId !== this.activePointerId) return;
-		const deltaPercent = (event.clientX - this.dragStartX) / this.viewportWidth * 100;
+		if (event.pointerId !== this.activePointerId) return;
+		const deltaX = event.clientX - this.dragStartX;
+		const deltaY = event.clientY - this.dragStartY;
+		if (!this.dragDirection) {
+			if (Math.abs(deltaX) < DIRECTION_THRESHOLD && Math.abs(deltaY) < DIRECTION_THRESHOLD) return;
+			this.dragDirection = Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
+			if (this.dragDirection === "vertical") return;
+			this.isDragging = true;
+			this.track.style.transition = "none";
+			this.viewport.setPointerCapture(event.pointerId);
+			window.clearTimeout(this.fallbackTimer);
+			this.pauseAutoSlide();
+		}
+		if (!this.isDragging || this.dragDirection !== "horizontal") return;
+		const deltaPercent = deltaX / this.viewportWidth * 100;
 		this.track.style.transform = `translateX(${this.dragBasePercent + deltaPercent}%)`;
 	};
 	handlePointerUp = (event) => {
-		if (!this.isDragging || event.pointerId !== this.activePointerId) return;
-		this.isDragging = false;
-		if (this.viewport.hasPointerCapture?.(event.pointerId)) this.viewport.releasePointerCapture(event.pointerId);
+		if (event.pointerId !== this.activePointerId) return;
 		const deltaX = event.clientX - this.dragStartX;
+		if (this.viewport.hasPointerCapture?.(event.pointerId)) this.viewport.releasePointerCapture(event.pointerId);
+		this.activePointerId = null;
+		if (this.dragDirection !== "horizontal") {
+			this.resumeAutoSlide();
+			this.dragDirection = null;
+			return;
+		}
+		this.isDragging = false;
 		const threshold = this.viewportWidth * DRAG_THRESHOLD_RATIO;
 		this.track.style.transition = "";
 		if (deltaX <= -threshold) this.showNext();
@@ -1741,6 +1774,7 @@ var Favorites = class {
 			this.moveTrack(true);
 			this.resumeAutoSlide();
 		}
+		this.dragDirection = null;
 	};
 };
 var About_module_default = {
@@ -2316,4 +2350,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-4sgdScWe.js.map
+//# sourceMappingURL=main-CKABEmn1.js.map
