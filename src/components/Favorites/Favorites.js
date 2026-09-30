@@ -5,6 +5,7 @@ import styles from './Favorites.module.css';
 const SLIDE_DURATION = 5000;
 const TRANSITION_DURATION = 700;
 const DRAG_THRESHOLD_RATIO = 0.15;
+const DIRECTION_THRESHOLD = 5;
 
 function arrowIcon(direction) {
   const path =
@@ -71,20 +72,34 @@ function createCard(product, isClone = false) {
 }
 
 function createProgress() {
-  return createElement(
+  const items = [];
+  const fills = [];
+
+  const progress = createElement(
     'div',
     {
       className: styles.progress,
       'aria-hidden': 'true',
     },
-    ...FAVORITE_PRODUCTS.map(() =>
-      createElement(
-        'span',
-        { className: styles.progressItem },
-        createElement('span', { className: styles.progressFill }),
-      ),
-    ),
+    ...FAVORITE_PRODUCTS.map(() => {
+      const fill = createElement('span', {
+        className: styles.progressFill,
+      });
+
+      const item = createElement('span', { className: styles.progressItem }, fill);
+
+      items.push(item);
+      fills.push(fill);
+
+      return item;
+    }),
   );
+
+  return {
+    element: progress,
+    items,
+    fills,
+  };
 }
 
 class Favorites {
@@ -100,8 +115,10 @@ class Favorites {
     this.isDragging = false;
     this.activePointerId = null;
     this.dragStartX = 0;
+    this.dragStartY = 0;
     this.dragBasePercent = 0;
     this.viewportWidth = 0;
+    this.dragDirection = null;
 
     const title = createElement(
       'h2',
@@ -137,8 +154,12 @@ class Favorites {
       this.nextButton,
     );
 
-    this.progress = createProgress();
-    this.progressItems = [...this.progress.children];
+    const progressData = createProgress();
+
+    this.progress = progressData.element;
+    this.progressItems = progressData.items;
+    this.progressFills = progressData.fills;
+
     this.element = createElement(
       'section',
       {
@@ -230,8 +251,7 @@ class Favorites {
   }
 
   getActiveFill() {
-    const item = this.progressItems[this.currentIndex];
-    return item ? item.querySelector(`.${styles.progressFill}`) : null;
+    return this.progressFills[this.currentIndex] ?? null;
   }
 
   startAutoSlide() {
@@ -281,36 +301,59 @@ class Favorites {
 
   handlePointerDown = (event) => {
     if (this.isAnimating || this.isDragging) return;
-    if (event.button !== undefined && event.button !== 0) return; // только левая кнопка мыши
-
-    this.isDragging = true;
+    if (event.button !== undefined && event.button !== 0) return;
     this.activePointerId = event.pointerId;
     this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
     this.dragBasePercent = -100 * this.position;
     this.viewportWidth = this.viewport.offsetWidth;
-    this.track.style.transition = 'none';
-    this.viewport.setPointerCapture(event.pointerId);
-
-    window.clearTimeout(this.fallbackTimer);
+    this.dragDirection = null;
     this.pauseAutoSlide();
   };
 
   handlePointerMove = (event) => {
-    if (!this.isDragging || event.pointerId !== this.activePointerId) return;
+    if (event.pointerId !== this.activePointerId) return;
     const deltaX = event.clientX - this.dragStartX;
+    const deltaY = event.clientY - this.dragStartY;
+
+    if (!this.dragDirection) {
+      if (Math.abs(deltaX) < DIRECTION_THRESHOLD && Math.abs(deltaY) < DIRECTION_THRESHOLD) {
+        return;
+      }
+      this.dragDirection = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
+      if (this.dragDirection === 'vertical') {
+        return;
+      }
+      this.isDragging = true;
+      this.track.style.transition = 'none';
+      this.viewport.setPointerCapture(event.pointerId);
+      window.clearTimeout(this.fallbackTimer);
+      this.pauseAutoSlide();
+    }
+    if (!this.isDragging || this.dragDirection !== 'horizontal') {
+      return;
+    }
     const deltaPercent = (deltaX / this.viewportWidth) * 100;
     this.track.style.transform = `translateX(${this.dragBasePercent + deltaPercent}%)`;
   };
 
   handlePointerUp = (event) => {
-    if (!this.isDragging || event.pointerId !== this.activePointerId) return;
+    if (event.pointerId !== this.activePointerId) return;
 
-    this.isDragging = false;
+    const deltaX = event.clientX - this.dragStartX;
+
     if (this.viewport.hasPointerCapture?.(event.pointerId)) {
       this.viewport.releasePointerCapture(event.pointerId);
     }
 
-    const deltaX = event.clientX - this.dragStartX;
+    this.activePointerId = null;
+    if (this.dragDirection !== 'horizontal') {
+      this.resumeAutoSlide();
+      this.dragDirection = null;
+      return;
+    }
+    this.isDragging = false;
+
     const threshold = this.viewportWidth * DRAG_THRESHOLD_RATIO;
 
     this.track.style.transition = '';
@@ -323,6 +366,7 @@ class Favorites {
       this.moveTrack(true);
       this.resumeAutoSlide();
     }
+    this.dragDirection = null;
   };
 }
 
