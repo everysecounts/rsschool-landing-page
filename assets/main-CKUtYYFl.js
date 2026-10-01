@@ -454,21 +454,16 @@ var MobileMenu = class {
 		});
 		this.element = createElement("div", { className: MobileMenu_module_default.mobileMenu }, this.navigation.element, this.menuLink);
 		this.isOpen = false;
-		this.returnFocusElement = null;
 		this.handleKeyDown = this.handleKeyDown.bind(this);
-	}
-	getFocusableElements() {
-		return [...this.navigation.links, this.menuLink];
+		this.element.inert = true;
 	}
 	open() {
 		if (this.isOpen) return;
 		this.isOpen = true;
-		this.returnFocusElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		this.element.inert = false;
 		this.element.classList.add(MobileMenu_module_default.open);
 		document.body.style.overflow = "hidden";
 		document.addEventListener("keydown", this.handleKeyDown);
-		const firstElement = this.getFocusableElements()[0];
-		if (firstElement) firstElement.focus({ preventScroll: true });
 	}
 	close(onClosed) {
 		if (!this.isOpen) {
@@ -481,12 +476,9 @@ var MobileMenu = class {
 		this.element.addEventListener("transitionend", handleTransitionEnd, { once: true });
 		this.isOpen = false;
 		this.element.classList.remove(MobileMenu_module_default.open);
+		this.element.inert = true;
 		document.body.style.overflow = "";
 		document.removeEventListener("keydown", this.handleKeyDown);
-		if (this.returnFocusElement instanceof HTMLElement) {
-			this.returnFocusElement.focus({ preventScroll: true });
-			this.returnFocusElement = null;
-		}
 	}
 	toggle() {
 		if (this.isOpen) {
@@ -498,29 +490,15 @@ var MobileMenu = class {
 	}
 	handleKeyDown(event) {
 		if (!this.isOpen) return;
-		if (event.key === "Tab") {
-			const focusableElements = this.getFocusableElements();
-			if (!focusableElements.length) return;
-			const firstElement = focusableElements[0];
-			const lastElement = focusableElements[focusableElements.length - 1];
-			if (event.shiftKey && document.activeElement === firstElement) {
-				event.preventDefault();
-				lastElement.focus();
-				return;
-			}
-			if (!event.shiftKey && document.activeElement === lastElement) {
-				event.preventDefault();
-				firstElement.focus();
-			}
+		if (event.key === "Tab" || event.key === "Enter" || SCROLL_KEYS.includes(event.key)) {
+			event.preventDefault();
 			return;
 		}
 		if (event.key === "Escape") {
 			event.preventDefault();
 			this.close();
 			this.onClose?.();
-			return;
 		}
-		if (SCROLL_KEYS.includes(event.key)) event.preventDefault();
 	}
 	setActivePath(path) {
 		const isMenuPage = path === "/menu";
@@ -2403,4 +2381,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-X1AvCCmR.js.map
+//# sourceMappingURL=main-CKUtYYFl.js.map
