@@ -41,6 +41,7 @@
         line-height: 150%;
         position: relative;
         letter-spacing: 0.01em;
+        outline: none;
 
         @media screen and (width <= 768px) {
           font-size: 32px;
