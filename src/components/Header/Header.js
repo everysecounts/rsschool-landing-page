@@ -8,8 +8,11 @@ import styles from './Header.module.css';
 class Header {
   constructor(onLinkClick) {
     this.logo = new Logo((event, link) => {
-      this.closeMobileMenu();
-      onLinkClick?.(event, link);
+      event.preventDefault();
+      this.mobileMenu.close(() => {
+        onLinkClick?.(event, link);
+      });
+      this.controls.setBurgerState(false);
     });
     this.navigation = new Navigation(onLinkClick);
     this.navigation.element.classList.add(styles.desktopNavigation);
@@ -29,6 +32,10 @@ class Header {
       this.controls.element,
       this.mobileMenu.element,
     );
+
+    this.mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+    this.handleMediaChange = this.handleMediaChange.bind(this);
+    this.mobileMediaQuery.addEventListener('change', this.handleMediaChange);
   }
 
   toggleMobileMenu() {
@@ -41,9 +48,19 @@ class Header {
     this.controls.setBurgerState(false);
   }
 
+  handleMediaChange(event) {
+    if (!event.matches) {
+      this.closeMobileMenu();
+    }
+  }
+
   setActivePath(path) {
     this.controls.setActivePath(path);
     this.mobileMenu.setActivePath(path);
+  }
+
+  destroy() {
+    this.mobileMediaQuery.removeEventListener('change', this.handleMediaChange);
   }
 }
 

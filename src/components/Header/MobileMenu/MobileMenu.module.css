@@ -25,6 +25,7 @@
     font-size: 16px;
     line-height: 150%;
     text-decoration: none;
+    outline: none;
 
     @media screen and (width <= 768px) and (height <= 750px) {
       margin-top: clamp(50px, calc(50px + (100vh - 650px) * 50 / 100), 100px);
@@ -78,7 +79,7 @@
     }
   }
 
-  @media screen and (width > 1024px) {
+  @media screen and (width > 768px) {
     display: none;
   }
 }

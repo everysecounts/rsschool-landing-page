@@ -8,7 +8,6 @@
   gap: 40px;
 
   .loadMore {
-    display: none;
     width: 60px;
     height: 60px;
     padding: 0;
@@ -23,8 +22,16 @@
       background-color 0.3s ease,
       color 0.3s ease;
 
-    @media screen and (width < 1440px) {
-      display: flex;
+    svg {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.5s ease;
+    }
+
+    &.loading {
+      svg {
+        transform: rotate(360deg);
+      }
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -32,11 +39,6 @@
         background-color: var(--background-container);
         color: var(--text-inverse);
       }
-    }
-
-    svg {
-      width: 24px;
-      height: 24px;
     }
   }
 
@@ -131,17 +133,5 @@
     flex-wrap: wrap;
     gap: 40px;
     justify-content: center;
-
-    @media screen and (width < 1440px) {
-      > :nth-child(n + 7) {
-        display: none;
-      }
-    }
-
-    @media screen and (width <= 768px) {
-      > :nth-child(n + 5) {
-        display: none;
-      }
-    }
   }
 }

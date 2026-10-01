@@ -24,6 +24,10 @@ const CATEGORIES = [
 class Catalog {
   constructor() {
     this.activeCategory = 'coffee';
+    this.isExpanded = false;
+    this.mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+    this.isMobile = this.mobileMediaQuery.matches;
+    this.handleMediaChange = this.handleMediaChange.bind(this);
 
     this.title = createElement(
       'h1',
@@ -38,12 +42,14 @@ class Catalog {
       {
         className: styles.tabs,
       },
-      ...CATEGORIES.map((category, index) => this.createTab(category, index)),
+      ...CATEGORIES.map((category) => this.createTab(category)),
     );
 
     this.products = createElement('div', {
       className: styles.products,
     });
+
+    this.loadMoreIcon = this.createLoadMoreIcon();
 
     this.loadMoreButton = createElement(
       'button',
@@ -52,9 +58,14 @@ class Catalog {
         type: 'button',
         'aria-label': 'Load more products',
       },
-      this.createLoadMoreIcon(),
+      this.loadMoreIcon,
     );
 
+    this.loadMoreButton.addEventListener('click', () => {
+      this.handleLoadMore();
+    });
+
+    this.mobileMediaQuery.addEventListener('change', this.handleMediaChange);
     this.renderProducts();
 
     this.element = createElement(
@@ -69,8 +80,8 @@ class Catalog {
     );
   }
 
-  createTab(category, index) {
-    const isActive = index === 0;
+  createTab(category) {
+    const isActive = category.value === this.activeCategory;
     const icon = createElement('img', {
       className: styles.icon,
       src: category.icon,
@@ -81,7 +92,7 @@ class Catalog {
     const iconWrapper = createElement('span', { className: styles.iconWrapper }, icon);
     const label = createElement('span', { className: styles.label }, category.label);
 
-    return createElement(
+    const button = createElement(
       'button',
       {
         className: `${styles.tab} ${isActive ? styles.tabActive : ''}`,
@@ -90,6 +101,55 @@ class Catalog {
       iconWrapper,
       label,
     );
+
+    button.addEventListener('click', () => this.selectCategory(category.value));
+    return button;
+  }
+
+  selectCategory(category) {
+    if (category === this.activeCategory) {
+      return;
+    }
+
+    this.activeCategory = category;
+    this.isExpanded = false;
+
+    [...this.tabs.children].forEach((tab, index) => {
+      const isActive = CATEGORIES[index].value === this.activeCategory;
+
+      tab.classList.toggle(styles.tabActive, isActive);
+    });
+    this.renderProducts();
+  }
+
+  getVisibleCount(totalProducts) {
+    if (this.isExpanded || !this.isMobile) {
+      return totalProducts;
+    }
+    return Math.min(4, totalProducts);
+  }
+
+  handleMediaChange(event) {
+    this.isMobile = event.matches;
+    this.isExpanded = false;
+    this.renderProducts();
+  }
+
+  handleLoadMore() {
+    this.loadMoreButton.disabled = true;
+    this.loadMoreButton.classList.add(styles.loading);
+
+    const handleTransitionEnd = (event) => {
+      if (event.target !== this.loadMoreIcon || event.propertyName !== 'transform') {
+        return;
+      }
+      this.loadMoreButton.removeEventListener('transitionend', handleTransitionEnd);
+      this.loadMoreButton.classList.remove(styles.loading);
+      this.isExpanded = true;
+      this.renderProducts();
+      this.loadMoreButton.disabled = false;
+    };
+    this.loadMoreButton.addEventListener('transitionend', handleTransitionEnd);
   }
 
   createLoadMoreIcon() {
@@ -120,11 +180,16 @@ class Catalog {
 
   renderProducts() {
     const products = PRODUCTS.filter((product) => product.category === this.activeCategory);
-    this.products.replaceChildren(...products.map((product) => new CardCatalog(product).element));
+    const visibleCount = this.getVisibleCount(products.length);
+    this.products.replaceChildren(
+      ...products.slice(0, visibleCount).map((product) => new CardCatalog(product).element),
+    );
+    const hasMoreProducts = visibleCount < products.length;
+    this.loadMoreButton.style.display = hasMoreProducts ? 'flex' : 'none';
   }
 
-  mount(container) {
-    container.replaceChildren(this.element);
+  destroy() {
+    this.mobileMediaQuery.removeEventListener('change', this.handleMediaChange);
   }
 }
 

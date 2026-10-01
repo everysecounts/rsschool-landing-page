@@ -44,6 +44,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       border: 1px solid var(--border-primary);
       border-radius: 50%;
       background: transparent;
@@ -65,9 +66,23 @@
       }
     }
 
-    .card {
-      max-width: 480px;
+    .viewport {
       width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+
+    .track {
+      display: flex;
+      width: 100%;
+      transition: transform 0.7s ease-in-out;
+      will-change: transform;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      flex: 0 0 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -78,6 +93,7 @@
         aspect-ratio: 1;
         object-fit: contain;
         margin-bottom: 20px;
+        user-select: none;
 
         @media screen and (width < 768px) {
           margin-bottom: clamp(20px, calc(20px + (768px - 100vw) * 8 / 288), 28px);
@@ -118,14 +134,43 @@
     justify-content: center;
 
     .progressItem {
+      position: relative;
       width: 40px;
       height: 4px;
+      overflow: hidden;
+      flex-shrink: 0;
       border-radius: 100px;
       background: var(--border-primary);
 
-      &.progressItemActive {
+      .progressFill {
+        position: absolute;
+        inset: 0;
+        width: 0;
+        border-radius: inherit;
         background: var(--text-primary);
       }
+
+      &.progressItemComplete {
+        .progressFill {
+          width: 100%;
+        }
+      }
+
+      &.progressItemActive {
+        .progressFill {
+          animation: progressFill var(--slide-duration, 5000ms) linear forwards;
+        }
+      }
     }
+  }
+}
+
+@keyframes progressFill {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
   }
 }

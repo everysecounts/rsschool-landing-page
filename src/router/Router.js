@@ -48,7 +48,9 @@ class Router {
   render() {
     clearSections();
     const path = this.getPath();
-    const Page = this.routes[path] || this.routes['*'];
+    const route = this.routes[path] || this.routes['*'];
+    document.title = route.title;
+    const Page = route.Page;
     new Page(this.handleLinkClick.bind(this)).mount(this.container);
     this.onNavigate?.(path);
     this.scrollToHash();

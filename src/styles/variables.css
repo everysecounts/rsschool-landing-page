@@ -14,6 +14,7 @@
   --switch-hover-bg: #665f55;
   --switch-icon-on: #e1d4c9;
   --switch-icon-off: #403f3d;
+  --underline-offset: -4px;
 }
 
 [data-theme='dark'] {
