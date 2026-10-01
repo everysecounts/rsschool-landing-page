@@ -209,12 +209,12 @@
     display: block;
   }
 }
-._nav_1kymj_1 {
+._nav_1m278_1 {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  ._navList_1kymj_6 {
+  ._navList_1m278_6 {
     display: flex;
     gap: 40px;
 
@@ -236,7 +236,7 @@
       gap: clamp(45px, calc(45px + (100vh - 600px) * 5 / 50), 50px);
     }
 
-    ._navItem_1kymj_28 {
+    ._navItem_1m278_28 {
       list-style-type: none;
       height: 28px;
 
@@ -244,7 +244,7 @@
         height: 40px;
       }
 
-      ._navLink_1kymj_36 {
+      ._navLink_1m278_36 {
         text-decoration: none;
         color: var(--text-primary);
         font-weight: 600;
@@ -252,6 +252,7 @@
         line-height: 150%;
         position: relative;
         letter-spacing: 0.01em;
+        outline: none;
 
         @media screen and (width <= 768px) {
           font-size: 32px;
@@ -280,7 +281,7 @@
     }
   }
 }
-._mobileMenu_3u3af_1 {
+._mobileMenu_1eiyl_1 {
   position: fixed;
   inset: 0;
   z-index: 10;
@@ -292,11 +293,11 @@
   transform: translateX(100%);
   transition: transform 0.3s ease;
 
-  &._open_3u3af_13 {
+  &._open_1eiyl_13 {
     transform: translateX(0);
   }
 
-  ._menu_3u3af_17 {
+  ._menu_1eiyl_17 {
     position: relative;
     display: flex;
     align-items: center;
@@ -307,6 +308,7 @@
     font-size: 16px;
     line-height: 150%;
     text-decoration: none;
+    outline: none;
 
     @media screen and (width <= 768px) and (height <= 750px) {
       margin-top: clamp(50px, calc(50px + (100vh - 650px) * 50 / 100), 100px);
@@ -316,7 +318,7 @@
       margin-top: clamp(45px, calc(45px + (100vh - 600px) * 5 / 50), 50px);
     }
 
-    ._menuIcon_3u3af_37 {
+    ._menuIcon_1eiyl_38 {
       width: 20px;
       height: 20px;
     }
@@ -326,7 +328,7 @@
       line-height: 125%;
       gap: 16px;
 
-      ._menuIcon_3u3af_37 {
+      ._menuIcon_1eiyl_38 {
         width: 40px;
         height: 40px;
       }
@@ -346,12 +348,12 @@
     }
 
     @media (hover: hover) and (pointer: fine) {
-      &:not(._menuActive_3u3af_67):hover::after {
+      &:not(._menuActive_1eiyl_68):hover::after {
         transform: scaleX(1);
       }
     }
 
-    &._menuActive_3u3af_67 {
+    &._menuActive_1eiyl_68 {
       cursor: default;
 
       &::after {
