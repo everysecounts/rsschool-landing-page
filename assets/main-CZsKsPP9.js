@@ -205,12 +205,12 @@ var ThemeSwitcher = class {
 	}
 };
 var Controls_module_default = {
-	controls: "_controls_1m2j0_1",
-	menu: "_menu_1m2j0_17",
-	menuActive: "_menuActive_1m2j0_34",
-	menuIcon: "_menuIcon_1m2j0_39",
-	burger: "_burger_1m2j0_67",
-	burgerOpen: "_burgerOpen_1m2j0_109"
+	controls: "_controls_k5ati_1",
+	menu: "_menu_k5ati_17",
+	menuActive: "_menuActive_k5ati_34",
+	menuIcon: "_menuIcon_k5ati_39",
+	burger: "_burger_k5ati_67",
+	burgerOpen: "_burgerOpen_k5ati_110"
 };
 //#endregion
 //#region src/components/Header/Controls/Controls.js
@@ -438,6 +438,7 @@ var SCROLL_KEYS = [
 ];
 var MobileMenu = class {
 	constructor(onClose, onLinkClick) {
+		this.onClose = onClose;
 		this.navigation = new Navigation((event, link) => {
 			onClose();
 			onLinkClick?.(event, link);
@@ -516,6 +517,7 @@ var MobileMenu = class {
 		if (event.key === "Escape") {
 			event.preventDefault();
 			this.close();
+			this.onClose?.();
 			return;
 		}
 		if (SCROLL_KEYS.includes(event.key)) event.preventDefault();
@@ -2401,4 +2403,4 @@ document.documentElement.dataset.theme = savedTheme;
 new App(document.body).start();
 //#endregion
 
-//# sourceMappingURL=main-C-KlKV7B.js.map
+//# sourceMappingURL=main-CZsKsPP9.js.map
