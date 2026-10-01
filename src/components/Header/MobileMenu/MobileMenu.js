@@ -7,6 +7,7 @@ const SCROLL_KEYS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'
 
 class MobileMenu {
   constructor(onClose, onLinkClick) {
+    this.onClose = onClose;
     this.navigation = new Navigation((event, link) => {
       onClose();
       onLinkClick?.(event, link);
@@ -118,6 +119,7 @@ class MobileMenu {
     if (event.key === 'Escape') {
       event.preventDefault();
       this.close();
+      this.onClose?.();
       return;
     }
 
